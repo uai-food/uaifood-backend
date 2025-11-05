@@ -26,24 +26,35 @@ const {
  *               name:
  *                 type: string
  *                 description: Full name of the user
+ *                 example: "Stefani Joanne"
  *               email:
  *                 type: string
  *                 description: User's email address
+ *                 example: "stefani@teste.com"
  *               password:
  *                 type: string
  *                 description: User's password
+ *                 example: "Maynn12345"
  *               phone:
  *                 type: string
  *                 description: User's phone number
+ *                 example: "1133333333"
  *               type:
  *                 type: string
  *                 description: User type (e.g., client or admin)
+ *                 example: "ADMIN"
+ *               birthDate:
+ *                 type: string
+ *                 format: date
+ *                 description: Date of birth in format YYYY-MM-DD
+ *                 example: "2000-01-15"
  *     responses:
  *       201:
  *         description: User created successfully.
  *       400:
  *         description: Failed to create user.
  */
+
 router.post('/', createUser);
 
 /**

@@ -7,6 +7,7 @@ const order = require('./src/routes/order');
 const orderItem = require('./src/routes/orderItem');
 const swaggerUi = require('swagger-ui-express');
 const swaggerDocs = require('./configs/swaggerConfig');
+require('dotenv').config();
 
 app.use(express.json());
 
