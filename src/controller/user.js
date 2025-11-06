@@ -77,12 +77,42 @@ async function deleteUser(req, res) {
     }
 }
 
+// Login
+async function loginUser(req, res) {
+    const { email, password } = req.body;
+
+    const user = await prisma.user.findUnique({ where: { email } });
+
+    if (!user || !(await bcrypt.compare(password, user.password))) {
+        return res.status(401).json({ error: 'Email ou senha inválidos.' });
+    }
+    const token = jwtConfig.generateToken({ id: user.id });
+
+    return res.status(200).json({ token });
+}
+
+// Authentication
+async function autenticarToken(req, res, next) {
+    const authHeader = req.headers['authorization'];
+    const token = authHeader && authHeader.split(' ')[1];
+    if (token == null) return res.sendStatus(401);
+    try {
+        const user = await jwtConfig.verifyToken(token);
+        req.user = user;
+        next();
+    } catch (error) {
+return res.sendStatus(403);
+}
+}
+
 module.exports = {
     createUser,
     listUsers,
     getUserById,
     updateUser,
-    deleteUser
+    deleteUser,
+    loginUser,
+    autenticarToken
 };
 
 

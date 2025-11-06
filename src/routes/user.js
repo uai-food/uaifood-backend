@@ -6,7 +6,9 @@ const {
   listUsers, 
   getUserById, 
   updateUser, 
-  deleteUser 
+  deleteUser,
+  loginUser,
+  autenticarToken 
 } = require('../controller/user');
 
 /**
@@ -54,7 +56,6 @@ const {
  *       400:
  *         description: Failed to create user.
  */
-
 router.post('/', createUser);
 
 /**
@@ -90,7 +91,7 @@ router.get('/', listUsers);
  *       404:
  *         description: User not found.
  */
-router.get('/:id', getUserById);
+router.get('/:id', autenticarToken, getUserById);
 
 /**
  * @swagger
@@ -152,5 +153,46 @@ router.put('/:id', updateUser);
  *         description: User not found.
  */
 router.delete('/:id', deleteUser);
+
+/**
+ * @swagger
+ * /user/login:
+ *   post:
+ *     summary: Login a user
+ *     tags: [Users]
+ *     description: Authenticates a user and returns a JWT token.
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               email:
+ *                 type: string
+ *                 description: User's email
+ *                 example: "stefani@teste.com"
+ *               password:
+ *                 type: string
+ *                 description: User's password
+ *                 example: "Maynn12345"
+ *     responses:
+ *       200:
+ *         description: Login successful, returns JWT token.
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 token:
+ *                   type: string
+ *                   description: JWT token for authentication
+ *                   example: "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..."
+ *       401:
+ *         description: Invalid email or password.
+ *       500:
+ *         description: Internal server error.
+ */
+router.post('/login', loginUser);
 
 module.exports = router;
