@@ -8,7 +8,7 @@ const {
   updateUser, 
   deleteUser,
   loginUser,
-  autenticarToken 
+  autenticarToken
 } = require('../controller/user');
 
 /**

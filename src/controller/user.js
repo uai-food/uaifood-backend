@@ -1,5 +1,6 @@
 const prisma = require('../../prisma/prismaClient');
 const bcrypt = require('bcrypt');
+const jwtConfig = require('../../auth/jwtConfigs');
 
 // Create
 async function createUser(req, res) {
@@ -86,7 +87,7 @@ async function loginUser(req, res) {
     if (!user || !(await bcrypt.compare(password, user.password))) {
         return res.status(401).json({ error: 'Email ou senha inválidos.' });
     }
-    const token = jwtConfig.generateToken({ id: user.id });
+    const token = jwtConfig.generateToken({ id: user.id.toString() });
 
     return res.status(200).json({ token });
 }
