@@ -13,11 +13,11 @@ const itemController = require('../controller/item');
  * @swagger
  * /item:
  *   get:
- *     summary: List all items
+ *     summary: Listar todos os itens
  *     tags: [Item]
  *     responses:
  *       200:
- *         description: List of items
+ *         description: Lista de itens
  *         content:
  *           application/json:
  *             schema:
@@ -25,7 +25,7 @@ const itemController = require('../controller/item');
  *               items:
  *                 $ref: '#/components/schemas/Item'
  *   post:
- *     summary: Create a new item
+ *     summary: Criar um novo item
  *     tags: [Item]
  *     requestBody:
  *       required: true
@@ -35,7 +35,7 @@ const itemController = require('../controller/item');
  *             $ref: '#/components/schemas/Item'
  *     responses:
  *       201:
- *         description: Item created
+ *         description: Item criado
  *         content:
  *           application/json:
  *             schema:
@@ -46,7 +46,7 @@ const itemController = require('../controller/item');
  * @swagger
  * /item/{id}:
  *   get:
- *     summary: Get item by ID
+ *     summary: Obter item por ID
  *     tags: [Item]
  *     parameters:
  *       - in: path
@@ -56,15 +56,15 @@ const itemController = require('../controller/item');
  *           type: integer
  *     responses:
  *       200:
- *         description: Item found
+ *         description: Item encontrado
  *         content:
  *           application/json:
  *             schema:
  *               $ref: '#/components/schemas/Item'
  *       404:
- *         description: Item not found
+ *         description: Item não encontrado
  *   put:
- *     summary: Update item
+ *     summary: Atualizar item
  *     tags: [Item]
  *     parameters:
  *       - in: path
@@ -80,7 +80,7 @@ const itemController = require('../controller/item');
  *             $ref: '#/components/schemas/Item'
  *     responses:
  *       200:
- *         description: Item updated
+ *         description: Item atualizado
  *         content:
  *           application/json:
  *             schema:
@@ -96,7 +96,7 @@ const itemController = require('../controller/item');
  *           type: integer
  *     responses:
  *       204:
- *         description: Item deleted
+ *         description: Item removido
  */
 
 router.get('/', itemController.getAll);

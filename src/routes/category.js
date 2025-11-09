@@ -13,11 +13,11 @@ const categoryController = require('../controller/category');
  * @swagger
  * /category:
  *   get:
- *     summary: List all categories
+ *     summary: Listar todas as categorias
  *     tags: [Category]
  *     responses:
  *       200:
- *         description: List of categories
+ *         description: Lista de categorias
  *         content:
  *           application/json:
  *             schema:
@@ -25,7 +25,7 @@ const categoryController = require('../controller/category');
  *               items:
  *                 $ref: '#/components/schemas/Category'
  *   post:
- *     summary: Create a new category
+ *     summary: Criar uma nova categoria
  *     tags: [Category]
  *     requestBody:
  *       required: true
@@ -35,7 +35,7 @@ const categoryController = require('../controller/category');
  *             $ref: '#/components/schemas/Category'
  *     responses:
  *       201:
- *         description: Category created
+ *         description: Categoria criada
  *         content:
  *           application/json:
  *             schema:
@@ -46,7 +46,7 @@ const categoryController = require('../controller/category');
  * @swagger
  * /category/{id}:
  *   get:
- *     summary: Get category by ID
+ *     summary: Obter categoria por ID
  *     tags: [Category]
  *     parameters:
  *       - in: path
@@ -56,15 +56,15 @@ const categoryController = require('../controller/category');
  *           type: integer
  *     responses:
  *       200:
- *         description: Category found
+ *         description: Categoria encontrada
  *         content:
  *           application/json:
  *             schema:
  *               $ref: '#/components/schemas/Category'
  *       404:
- *         description: Category not found
+ *         description: Categoria não encontrada
  *   put:
- *     summary: Update category
+ *     summary: Atualizar categoria
  *     tags: [Category]
  *     parameters:
  *       - in: path
@@ -80,7 +80,7 @@ const categoryController = require('../controller/category');
  *             $ref: '#/components/schemas/Category'
  *     responses:
  *       200:
- *         description: Category updated
+ *         description: Categoria atualizada
  *         content:
  *           application/json:
  *             schema:
@@ -96,7 +96,7 @@ const categoryController = require('../controller/category');
  *           type: integer
  *     responses:
  *       204:
- *         description: Category deleted
+ *         description: Categoria removida
  */
 
 router.get('/', categoryController.getAll);

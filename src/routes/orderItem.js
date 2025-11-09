@@ -13,11 +13,11 @@ const orderItemController = require('../controller/orderItem');
  * @swagger
  * /orderItem:
  *   get:
- *     summary: List all order items
+ *     summary: Listar todos os itens de pedido
  *     tags: [OrderItem]
  *     responses:
  *       200:
- *         description: List of order items
+ *         description: Lista de itens de pedido
  *         content:
  *           application/json:
  *             schema:
@@ -25,7 +25,7 @@ const orderItemController = require('../controller/orderItem');
  *               items:
  *                 $ref: '#/components/schemas/OrderItem'
  *   post:
- *     summary: Create a new order item
+ *     summary: Criar um novo item de pedido
  *     tags: [OrderItem]
  *     requestBody:
  *       required: true
@@ -35,7 +35,7 @@ const orderItemController = require('../controller/orderItem');
  *             $ref: '#/components/schemas/OrderItem'
  *     responses:
  *       201:
- *         description: Order item created
+ *         description: Item de pedido criado
  *         content:
  *           application/json:
  *             schema:
@@ -46,7 +46,7 @@ const orderItemController = require('../controller/orderItem');
  * @swagger
  * /orderItem/{id}:
  *   get:
- *     summary: Get order item by ID
+ *     summary: Obter item de pedido por ID
  *     tags: [OrderItem]
  *     parameters:
  *       - in: path
@@ -56,15 +56,15 @@ const orderItemController = require('../controller/orderItem');
  *           type: integer
  *     responses:
  *       200:
- *         description: Order item found
+ *         description: Item de pedido encontrado
  *         content:
  *           application/json:
  *             schema:
  *               $ref: '#/components/schemas/OrderItem'
  *       404:
- *         description: Order item not found
+ *         description: Item de pedido não encontrado
  *   put:
- *     summary: Update order item
+ *     summary: Atualizar item de pedido
  *     tags: [OrderItem]
  *     parameters:
  *       - in: path
@@ -80,13 +80,13 @@ const orderItemController = require('../controller/orderItem');
  *             $ref: '#/components/schemas/OrderItem'
  *     responses:
  *       200:
- *         description: Order item updated
+ *         description: Item de pedido atualizado
  *         content:
  *           application/json:
  *             schema:
  *               $ref: '#/components/schemas/OrderItem'
  *   delete:
- *     summary: Delete order item
+ *     summary: Remover item de pedido
  *     tags: [OrderItem]
  *     parameters:
  *       - in: path
@@ -96,7 +96,7 @@ const orderItemController = require('../controller/orderItem');
  *           type: integer
  *     responses:
  *       204:
- *         description: Order item deleted
+ *         description: Item de pedido removido
  */
 
 router.get('/', orderItemController.getAll);

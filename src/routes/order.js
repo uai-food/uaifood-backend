@@ -13,11 +13,11 @@ const orderController = require('../controller/order');
  * @swagger
  * /order:
  *   get:
- *     summary: List all orders
+ *     summary: Listar todos os pedidos
  *     tags: [Order]
  *     responses:
  *       200:
- *         description: List of orders
+ *         description: Lista de pedidos
  *         content:
  *           application/json:
  *             schema:
@@ -25,7 +25,7 @@ const orderController = require('../controller/order');
  *               items:
  *                 $ref: '#/components/schemas/Order'
  *   post:
- *     summary: Create a new order
+ *     summary: Criar um novo pedido
  *     tags: [Order]
  *     requestBody:
  *       required: true
@@ -35,7 +35,7 @@ const orderController = require('../controller/order');
  *             $ref: '#/components/schemas/Order'
  *     responses:
  *       201:
- *         description: Order created
+ *         description: Pedido criado
  *         content:
  *           application/json:
  *             schema:
@@ -46,7 +46,7 @@ const orderController = require('../controller/order');
  * @swagger
  * /order/{id}:
  *   get:
- *     summary: Get order by ID
+ *     summary: Obter pedido por ID
  *     tags: [Order]
  *     parameters:
  *       - in: path
@@ -56,15 +56,15 @@ const orderController = require('../controller/order');
  *           type: integer
  *     responses:
  *       200:
- *         description: Order found
+ *         description: Pedido encontrado
  *         content:
  *           application/json:
  *             schema:
  *               $ref: '#/components/schemas/Order'
  *       404:
- *         description: Order not found
+ *         description: Pedido não encontrado
  *   put:
- *     summary: Update order
+ *     summary: Atualizar pedido
  *     tags: [Order]
  *     parameters:
  *       - in: path
@@ -80,7 +80,7 @@ const orderController = require('../controller/order');
  *             $ref: '#/components/schemas/Order'
  *     responses:
  *       200:
- *         description: Order updated
+ *         description: Pedido atualizado
  *         content:
  *           application/json:
  *             schema:
@@ -96,7 +96,7 @@ const orderController = require('../controller/order');
  *           type: integer
  *     responses:
  *       204:
- *         description: Order deleted
+ *         description: Pedido removido
  */
 
 router.get('/', orderController.getAll);

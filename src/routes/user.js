@@ -15,9 +15,9 @@ const {
  * @swagger
  * /user:
  *   post:
- *     summary: Create a new user
+ *     summary: Criar um novo usuário
  *     tags: [Users]
- *     description: Adds a new user to the system based on the provided information.
+ *     description: Adiciona um novo usuário ao sistema com as informações fornecidas.
  *     requestBody:
  *       required: true
  *       content:
@@ -27,34 +27,34 @@ const {
  *             properties:
  *               name:
  *                 type: string
- *                 description: Full name of the user
+ *                 description: Nome completo do usuário
  *                 example: "Stefani Joanne"
  *               email:
  *                 type: string
- *                 description: User's email address
+ *                 description: Email do usuário
  *                 example: "stefani@teste.com"
  *               password:
  *                 type: string
- *                 description: User's password
+ *                 description: Senha do usuário
  *                 example: "Maynn12345"
  *               phone:
  *                 type: string
- *                 description: User's phone number
+ *                 description: Telefone do usuário
  *                 example: "1133333333"
  *               type:
  *                 type: string
- *                 description: User type (e.g., client or admin)
+ *                 description: Tipo do usuário (por exemplo, CLIENT ou ADMIN)
  *                 example: "ADMIN"
  *               birthDate:
  *                 type: string
  *                 format: date
- *                 description: Date of birth in format YYYY-MM-DD
+ *                 description: Data de nascimento no formato YYYY-MM-DD
  *                 example: "2000-01-15"
  *     responses:
  *       201:
- *         description: User created successfully.
+ *         description: Usuário criado com sucesso.
  *       400:
- *         description: Failed to create user.
+ *         description: Falha ao criar usuário.
  */
 router.post('/', createUser);
 
@@ -62,12 +62,12 @@ router.post('/', createUser);
  * @swagger
  * /user:
  *   get:
- *     summary: List all users
+ *     summary: Listar todos os usuários
  *     tags: [Users]
- *     description: Returns a list of all registered users.
+ *     description: Retorna a lista de todos os usuários cadastrados.
  *     responses:
  *       200:
- *         description: List of users retrieved successfully.
+ *         description: Lista de usuários recuperada com sucesso.
  */
 router.get('/', listUsers);
 
@@ -75,21 +75,21 @@ router.get('/', listUsers);
  * @swagger
  * /user/{id}:
  *   get:
- *     summary: Get user by ID
+ *     summary: Obter usuário por ID
  *     tags: [Users]
- *     description: Returns details of a specific user.
+ *     description: Retorna detalhes de um usuário específico.
  *     parameters:
  *       - in: path
  *         name: id
  *         required: true
  *         schema:
  *           type: integer
- *         description: User ID
+ *         description: ID do usuário
  *     responses:
  *       200:
- *         description: User found.
+ *         description: Usuário encontrado.
  *       404:
- *         description: User not found.
+ *         description: Usuário não encontrado.
  */
 router.get('/:id', autenticarToken, getUserById);
 
@@ -97,16 +97,16 @@ router.get('/:id', autenticarToken, getUserById);
  * @swagger
  * /user/{id}:
  *   put:
- *     summary: Update a user
+ *     summary: Atualizar um usuário
  *     tags: [Users]
- *     description: Updates the data of an existing user.
+ *     description: Atualiza os dados de um usuário existente.
  *     parameters:
  *       - in: path
  *         name: id
  *         required: true
  *         schema:
  *           type: integer
- *         description: User ID
+ *         description: ID do usuário
  *     requestBody:
  *       required: true
  *       content:
@@ -126,9 +126,9 @@ router.get('/:id', autenticarToken, getUserById);
  *                 type: string
  *     responses:
  *       200:
- *         description: User updated successfully.
+ *         description: Usuário atualizado com sucesso.
  *       400:
- *         description: Error updating user.
+ *         description: Erro ao atualizar usuário.
  */
 router.put('/:id', updateUser);
 
@@ -136,21 +136,21 @@ router.put('/:id', updateUser);
  * @swagger
  * /user/{id}:
  *   delete:
- *     summary: Delete a user
+ *     summary: Remover um usuário
  *     tags: [Users]
- *     description: Removes a user from the system by ID.
+ *     description: Remove um usuário do sistema pelo ID.
  *     parameters:
  *       - in: path
  *         name: id
  *         required: true
  *         schema:
  *           type: integer
- *         description: User ID
+ *         description: ID do usuário
  *     responses:
  *       200:
- *         description: User deleted successfully.
+ *         description: Usuário removido com sucesso.
  *       404:
- *         description: User not found.
+ *         description: Usuário não encontrado.
  */
 router.delete('/:id', deleteUser);
 
@@ -158,9 +158,9 @@ router.delete('/:id', deleteUser);
  * @swagger
  * /user/login:
  *   post:
- *     summary: Login a user
+ *     summary: Autenticar usuário
  *     tags: [Users]
- *     description: Authenticates a user and returns a JWT token.
+ *     description: Autentica um usuário e retorna um token JWT.
  *     requestBody:
  *       required: true
  *       content:
@@ -170,15 +170,15 @@ router.delete('/:id', deleteUser);
  *             properties:
  *               email:
  *                 type: string
- *                 description: User's email
+ *                 description: Email do usuário
  *                 example: "stefani@teste.com"
  *               password:
  *                 type: string
- *                 description: User's password
+ *                 description: Senha do usuário
  *                 example: "Maynn12345"
  *     responses:
  *       200:
- *         description: Login successful, returns JWT token.
+ *         description: Login bem-sucedido, retorna token JWT.
  *         content:
  *           application/json:
  *             schema:
@@ -189,9 +189,9 @@ router.delete('/:id', deleteUser);
  *                   description: JWT token for authentication
  *                   example: "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..."
  *       401:
- *         description: Invalid email or password.
+ *         description: Email ou senha inválidos.
  *       500:
- *         description: Internal server error.
+ *         description: Erro interno do servidor.
  */
 router.post('/login', loginUser);
 
