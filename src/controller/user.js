@@ -14,6 +14,7 @@ async function createUser(req, res) {
                 password : senhaCriptografada,
                 birthDate: new Date(birthDate),
                 type,
+                phone,
             },
         });
         return res.status(201).json(newUser);
