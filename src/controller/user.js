@@ -4,7 +4,7 @@ const jwtConfig = require('../../auth/jwtConfigs');
 
 // Create
 async function createUser(req, res) {
-    const { name, email, password, birthDate, type } = req.body;
+    const { name, email, password, birthDate, type, phone } = req.body;
     try {
         const senhaCriptografada = await bcrypt.hash(password, 10);
         const newUser = await prisma.user.create({
