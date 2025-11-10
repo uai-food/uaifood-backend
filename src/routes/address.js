@@ -99,10 +99,12 @@ const addressController = require('../controller/address');
  *         description: Endereço removido
  */
 
+const { addressSchema, updateAddressSchema, validate } = require('../validation/address.schema');
+
 router.get('/', addressController.getAll);
-router.post('/', addressController.create);
+router.post('/', validate(addressSchema), addressController.create);
 router.get('/:id', addressController.getById);
-router.put('/:id', addressController.update);
+router.put('/:id', validate(updateAddressSchema), addressController.update);
 router.delete('/:id', addressController.delete);
 
 module.exports = router;

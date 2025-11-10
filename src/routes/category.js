@@ -99,10 +99,12 @@ const categoryController = require('../controller/category');
  *         description: Categoria removida
  */
 
+const { categorySchema, updateCategorySchema, validate } = require('../validation/category.schema');
+
 router.get('/', categoryController.getAll);
-router.post('/', categoryController.create);
+router.post('/', validate(categorySchema), categoryController.create);
 router.get('/:id', categoryController.getById);
-router.put('/:id', categoryController.update);
+router.put('/:id', validate(updateCategorySchema), categoryController.update);
 router.delete('/:id', categoryController.delete);
 
 module.exports = router;

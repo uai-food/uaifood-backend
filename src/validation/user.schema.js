@@ -1,19 +1,126 @@
-const z = require('zod');
+const { z } = require('zod');
 
-const userSchema = z.object({
-  name: z.string()
-    .min(1, { message: 'Nome é obrigatório' })
-    .max(50, { message: 'Nome deve ter no máximo 50 caracteres' }),
+// Criação de usuário
+const createUserSchema = z
+  .object({
+    name: z
+      .string()
+      .min(1, { message: 'O nome é obrigatório.' })
+      .max(50, { message: 'O nome deve ter no máximo 50 caracteres.' }),
 
-  email: z.string()
-    .email({ message: 'Email inválido' })
-    .min(1, { message: 'E-mail obrigatório' }),
+    email: z
+      .string()
+      .email({ message: 'E-mail inválido.' })
+      .min(1, { message: 'O e-mail é obrigatório.' }),
 
-  password: z.string()
-    .min(6, { message: 'Senha deve ter pelo menos 6 caracteres' }),
+    password: z
+      .string()
+      .min(6, { message: 'A senha deve ter pelo menos 6 caracteres.' }),
 
-  date_birth: z.string()
-    .regex(/^\d{4}-\d{2}-\d{2}$/, { message: 'Data de nascimento inválida (use o formato YYYY-MM-DD)' })
-}).strict();
+    phone: z
+      .string()
+      .min(8, { message: 'O telefone é inválido.' })
+      .max(20, { message: 'O telefone deve ter no máximo 20 caracteres.' })
+      .optional(),
 
-module.exports = userSchema;
+    type: z
+      .string()
+      .max(20, { message: 'O tipo do usuário deve ter no máximo 20 caracteres.' })
+      .optional(),
+
+    birthDate: z
+      .string()
+      .regex(/^\d{4}-\d{2}-\d{2}$/, {
+        message: 'A data de nascimento deve estar no formato YYYY-MM-DD.',
+      }),
+  })
+  .strict({
+    message: 'O corpo da requisição contém campos não permitidos.',
+  });
+
+// Login de usuário
+const loginUserSchema = z
+  .object({
+    email: z
+      .string()
+      .email({ message: 'E-mail inválido.' })
+      .min(1, { message: 'O e-mail é obrigatório.' }),
+
+    password: z
+      .string()
+      .min(6, { message: 'A senha deve ter pelo menos 6 caracteres.' }),
+  })
+  .strict({
+    message: 'O corpo da requisição contém campos não permitidos.',
+  });
+
+// Atualização de usuário
+const updateUserSchema = z
+  .object({
+    name: z
+      .string()
+      .min(1, { message: 'O nome é obrigatório.' })
+      .max(50, { message: 'O nome deve ter no máximo 50 caracteres.' })
+      .optional(),
+
+    email: z
+      .string()
+      .email({ message: 'E-mail inválido.' })
+      .min(1, { message: 'O e-mail é obrigatório.' })
+      .optional(),
+
+    password: z
+      .string()
+      .min(6, { message: 'A senha deve ter pelo menos 6 caracteres.' })
+      .optional(),
+
+    phone: z
+      .string()
+      .min(8, { message: 'O telefone é inválido.' })
+      .max(20, { message: 'O telefone deve ter no máximo 20 caracteres.' })
+      .optional(),
+
+    type: z
+      .string()
+      .max(20, { message: 'O tipo do usuário deve ter no máximo 20 caracteres.' })
+      .optional(),
+
+    birthDate: z
+      .string()
+      .regex(/^\d{4}-\d{2}-\d{2}$/, {
+        message: 'A data de nascimento deve estar no formato YYYY-MM-DD.',
+      })
+      .optional(),
+  })
+  .strict({
+    message: 'O corpo da requisição contém campos não permitidos.',
+  });
+
+// Middleware de validação
+function validate(schema) {
+  return (req, res, next) => {
+    const result = schema.safeParse(req.body);
+
+    if (!result.success) {
+      const errors = result.error.errors.map((e) => ({
+        campo: e.path.join('.') || 'corpo',
+        mensagem: e.message,
+      }));
+
+      return res.status(400).json({
+        sucesso: false,
+        erros: errors,
+      });
+    }
+
+    req.body = result.data;
+    next();
+  };
+}
+
+module.exports = {
+  createUserSchema,
+  loginUserSchema,
+  updateUserSchema,
+  validate,
+};

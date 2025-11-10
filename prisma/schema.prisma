@@ -48,7 +48,7 @@ model Order {
   clientId      BigInt
   client        User           @relation("Client", fields: [clientId], references: [id])
   paymentMethod PaymentMethod
-  status        String
+  status        OrderStatus 
   createdById   BigInt?
   createdBy     User?          @relation("CreatedBy", fields: [createdById], references: [id])
   createdAt     DateTime       @default(now())
@@ -96,4 +96,13 @@ enum PaymentMethod {
   DEBIT
   CREDIT
   PIX
+}
+
+enum OrderStatus {
+  PENDING         // Pedido criado, aguardando pagamento
+  PAID            // Pago, aguardando preparo
+  PREPARING       // Sendo preparado
+  OUT_FOR_DELIVERY // Saiu para entrega
+  DELIVERED       // Entregue
+  CANCELLED       // Cancelado
 }

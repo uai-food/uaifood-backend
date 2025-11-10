@@ -11,6 +11,8 @@ const {
   autenticarToken
 } = require('../controller/user');
 
+const { createUserSchema, loginUserSchema, updateUserSchema, validate } = require('../validation/user.schema');
+
 /**
  * @swagger
  * /user:
@@ -56,7 +58,7 @@ const {
  *       400:
  *         description: Falha ao criar usuário.
  */
-router.post('/', createUser);
+router.post('/', validate(createUserSchema), createUser);
 
 /**
  * @swagger
@@ -130,7 +132,7 @@ router.get('/:id', autenticarToken, getUserById);
  *       400:
  *         description: Erro ao atualizar usuário.
  */
-router.put('/:id', updateUser);
+router.put('/:id', validate(updateUserSchema), updateUser);
 
 /**
  * @swagger
@@ -193,6 +195,6 @@ router.delete('/:id', deleteUser);
  *       500:
  *         description: Erro interno do servidor.
  */
-router.post('/login', loginUser);
+router.post('/login', validate(loginUserSchema), loginUser);
 
 module.exports = router;

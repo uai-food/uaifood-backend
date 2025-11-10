@@ -99,10 +99,12 @@ const orderItemController = require('../controller/orderItem');
  *         description: Item de pedido removido
  */
 
+const { orderItemSchema, updateOrderItemSchema, validate } = require('../validation/orderItem.schema');
+
 router.get('/', orderItemController.getAll);
-router.post('/', orderItemController.create);
+router.post('/', validate(orderItemSchema), orderItemController.create);
 router.get('/:id', orderItemController.getById);
-router.put('/:id', orderItemController.update);
+router.put('/:id', validate(updateOrderItemSchema), orderItemController.update);
 router.delete('/:id', orderItemController.delete);
 
 module.exports = router;
