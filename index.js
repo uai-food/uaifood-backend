@@ -10,6 +10,11 @@ const swaggerUi = require('swagger-ui-express');
 const swaggerDocs = require('./configs/swaggerConfig');
 require('dotenv').config();
 
+// Corrige erro de BigInt no JSON
+BigInt.prototype.toJSON = function() {
+  return Number(this);
+};
+
 app.use(express.json());
 
 // Conecta a rota /usuarios
