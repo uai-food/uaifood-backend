@@ -99,12 +99,15 @@ const itemController = require('../controller/item');
  *         description: Item removido
  */
 
-const { itemSchema, updateItemSchema, validate } = require('../validation/item.schema');
+const { itemSchema, updateItemSchema } = require('../validation/item.schema');
+const validate = require('../validation/validate');
+const { autenticarToken } = require('../controller/user');
+const { requireRole } = require('../middleware/authorization');
 
 router.get('/', itemController.getAll);
-router.post('/', validate(itemSchema), itemController.create);
 router.get('/:id', itemController.getById);
-router.put('/:id', validate(updateItemSchema), itemController.update);
-router.delete('/:id', itemController.delete);
+router.post('/', autenticarToken, requireRole('ADMIN'), validate(itemSchema), itemController.create);
+router.put('/:id', autenticarToken, requireRole('ADMIN'), validate(updateItemSchema), itemController.update);
+router.delete('/:id', autenticarToken, requireRole('ADMIN'), itemController.delete);
 
 module.exports = router;

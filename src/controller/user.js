@@ -101,7 +101,7 @@ async function loginUser(req, res) {
     if (!user || !(await bcrypt.compare(password, user.password))) {
         return res.status(401).json({ error: 'Email ou senha inválidos.' });
     }
-    const token = jwtConfig.generateToken({ id: user.id.toString() });
+    const token = jwtConfig.generateToken(user.id.toString());
 
     return res.status(200).json({ token });
 }

@@ -10,6 +10,7 @@ const {
   loginUser,
   autenticarToken
 } = require('../controller/user');
+const { requireSelfOrRole } = require('../middleware/authorization');
 
 const { createUserSchema, loginUserSchema, updateUserSchema, validate } = require('../validation/user.schema');
 
@@ -132,7 +133,7 @@ router.get('/:id', autenticarToken, getUserById);
  *       400:
  *         description: Erro ao atualizar usuário.
  */
-router.put('/:id', validate(updateUserSchema), updateUser);
+router.put('/:id', autenticarToken, requireSelfOrRole('ADMIN'), validate(updateUserSchema), updateUser);
 
 /**
  * @swagger
@@ -154,7 +155,7 @@ router.put('/:id', validate(updateUserSchema), updateUser);
  *       404:
  *         description: Usuário não encontrado.
  */
-router.delete('/:id', deleteUser);
+router.delete('/:id', autenticarToken, requireSelfOrRole('ADMIN'), deleteUser);
 
 /**
  * @swagger

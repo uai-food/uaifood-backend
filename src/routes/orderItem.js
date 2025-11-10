@@ -99,12 +99,14 @@ const orderItemController = require('../controller/orderItem');
  *         description: Item de pedido removido
  */
 
-const { orderItemSchema, updateOrderItemSchema, validate } = require('../validation/orderItem.schema');
+const { orderItemSchema, updateOrderItemSchema } = require('../validation/orderItem.schema');
+const validate = require('../validation/validate');
+const { autenticarToken } = require('../controller/user');
 
 router.get('/', orderItemController.getAll);
-router.post('/', validate(orderItemSchema), orderItemController.create);
 router.get('/:id', orderItemController.getById);
-router.put('/:id', validate(updateOrderItemSchema), orderItemController.update);
-router.delete('/:id', orderItemController.delete);
+router.post('/', autenticarToken, validate(orderItemSchema), orderItemController.create);
+router.put('/:id', autenticarToken, validate(updateOrderItemSchema), orderItemController.update);
+router.delete('/:id', autenticarToken, orderItemController.delete);
 
 module.exports = router;
