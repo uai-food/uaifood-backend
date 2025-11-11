@@ -71,6 +71,8 @@ model Item {
   id         BigInt    @id @default(autoincrement())
   description String
   unitPrice   Float
+  imageUrl    String?
+  rating      Float?
   categoryId  BigInt
   category    Category  @relation(fields: [categoryId], references: [id])
   createdAt   DateTime  @default(now())

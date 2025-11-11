@@ -98,8 +98,13 @@ async function main() {
   const items = [];
   for (const it of itemsData) {
     const cat = categories.find((c) => c.description === it.category) || categories[0];
+    // generate an image url using Unsplash featured search based on the first word
+    const keyword = encodeURIComponent(it.description.split(' ')[0]);
+    const imageUrl = `https://source.unsplash.com/featured/?${keyword},food`;
+    // deterministic-ish rating between 3.5 and 5.0
+    const rating = Math.round((3.5 + (Math.abs(it.description.length) % 15) / 10) * 10) / 10;
     const created = await prisma.item.create({
-      data: { description: it.description, unitPrice: it.price, categoryId: cat.id }
+      data: { description: it.description, unitPrice: it.price, categoryId: cat.id, imageUrl, rating }
     });
     items.push(created);
   }
