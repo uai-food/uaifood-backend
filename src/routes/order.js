@@ -104,6 +104,8 @@ const validate = require('../validation/validate');
 const { autenticarToken } = require('../controller/user');
 
 router.get('/', orderController.getAll);
+// Pedidos do usuário autenticado
+router.get('/my-orders', autenticarToken, orderController.getMyOrders);
 router.post('/', autenticarToken, validate(orderSchema), orderController.create);
 router.get('/:id', autenticarToken, orderController.getById);
 router.put('/:id', autenticarToken, validate(updateOrderSchema), orderController.update);

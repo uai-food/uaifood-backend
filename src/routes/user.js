@@ -10,6 +10,7 @@ const {
   loginUser,
   autenticarToken
 } = require('../controller/user');
+const { getProfile } = require('../controller/user');
 const { requireSelfOrRole } = require('../middleware/authorization');
 
 const { createUserSchema, loginUserSchema, updateUserSchema, validate } = require('../validation/user.schema');
@@ -197,5 +198,8 @@ router.delete('/:id', autenticarToken, requireSelfOrRole('ADMIN'), deleteUser);
  *         description: Erro interno do servidor.
  */
 router.post('/login', validate(loginUserSchema), loginUser);
+
+// Retorna o perfil do usuário autenticado
+router.get('/profile', autenticarToken, getProfile);
 
 module.exports = router;

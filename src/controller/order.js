@@ -90,3 +90,22 @@ exports.delete = async (req, res) => {
     res.status(500).json({ error: error.message });
   }
 };
+
+// Retornar pedidos do usuário autenticado (client)
+exports.getMyOrders = async (req, res) => {
+  try {
+    const userId = req.user && req.user.id;
+    if (!userId) return res.status(401).json({ error: 'Usuário não autenticado.' });
+    const orders = await prisma.order.findMany({
+      where: { clientId: BigInt(userId) },
+      include: {
+        client: true,
+        createdBy: true,
+        items: { include: { item: true } }
+      }
+    });
+    res.json(orders);
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+};

@@ -1,4 +1,5 @@
 const express = require('express');
+const cors = require('cors');
 const app = express();
 const user = require('./src/routes/user'); //importa o arquivo usuarios.js
 const category = require('./src/routes/category');
@@ -16,6 +17,9 @@ BigInt.prototype.toJSON = function() {
 };
 
 app.use(express.json());
+
+// Habilita CORS para permitir requisições do frontend (Vite/dev)
+app.use(cors());
 
 // Conecta a rota /usuarios
 app.use('/user', user);

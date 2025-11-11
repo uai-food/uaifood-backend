@@ -4,7 +4,7 @@ const jwtConfig = require('../../auth/jwtConfigs');
 
 // Criar usuário
 async function createUser(req, res) {
-    const { name, email, password, birthDate, type, phone } = req.body;
+    const { name, email, password, birthDate, phone } = req.body;
     try {
         // Verifica se já existe usuário com o mesmo email
         const existing = await prisma.user.findUnique({ where: { email } });
@@ -18,8 +18,8 @@ async function createUser(req, res) {
                 email,
                 password: senhaCriptografada,
                 birthDate: new Date(birthDate),
-                type,
                 phone,
+                type: "CLIENT"
             },
         });
         return res.status(201).json(newUser);
@@ -96,27 +96,46 @@ async function deleteUser(req, res) {
 async function loginUser(req, res) {
     const { email, password } = req.body;
 
-    const user = await prisma.user.findUnique({ where: { email } });
+    try {
+        console.log('Login attempt for email:', email);
+        const user = await prisma.user.findUnique({ where: { email } });
+        console.log('User found:', !!user, user ? { id: user.id, email: user.email } : null);
+        if (!user) {
+            console.log('Login failed: user not found');
+            return res.status(401).json({ error: 'Email ou senha inválidos.' });
+        }
 
-    if (!user || !(await bcrypt.compare(password, user.password))) {
-        return res.status(401).json({ error: 'Email ou senha inválidos.' });
-    }
+        const match = await bcrypt.compare(password, user.password);
+        console.log('bcrypt.compare result for', email, ':', match);
+        if (!match) {
+            console.log('Login failed: password mismatch for', email);
+            return res.status(401).json({ error: 'Email ou senha inválidos.' });
+        }
+
     const token = jwtConfig.generateToken(user.id.toString());
-
-    return res.status(200).json({ token });
+    // remove password before returning user
+    const { password: _pwd, ...userSafe } = Object.assign({}, user);
+    return res.status(200).json({ token, user: userSafe });
+    } catch (error) {
+        console.error('loginUser error:', error && error.message ? error.message : error);
+        return res.status(500).json({ error: 'Erro ao efetuar login.' });
+    }
 }
 
 // Autenticação de token
 async function autenticarToken(req, res, next) {
     const authHeader = req.headers['authorization'];
     const token = authHeader && authHeader.split(' ')[1];
-    if (token == null) return res.sendStatus(401);
+    if (token == null) return res.status(401).json({ error: 'Token ausente' });
     try {
-        const user = await jwtConfig.verifyToken(token);
-        req.user = user;
+        const payload = await jwtConfig.verifyToken(token);
+        // normalizar id como number para usar com Prisma (que nas rotinas abaixo usa Number(id))
+        const id = payload && payload.id ? Number(payload.id) : undefined;
+        req.user = { ...payload, id };
         next();
     } catch (error) {
-        return res.sendStatus(403);
+        console.error('JWT verify error:', error && error.message ? error.message : error);
+        return res.status(403).json({ error: (error && error.message) || 'Token inválido' });
     }
 }
 
@@ -129,5 +148,23 @@ module.exports = {
     loginUser,
     autenticarToken,
 };
+
+// Retorna perfil do usuário autenticado (usado pelo frontend)
+async function getProfile(req, res) {
+    try {
+        console.log('getProfile req.user:', req.user);
+        const userId = req.user && req.user.id;
+        if (!userId) return res.status(401).json({ error: 'Usuário não autenticado.' });
+        const user = await prisma.user.findUnique({ where: { id: Number(userId) } });
+        if (!user) return res.status(404).json({ error: 'Usuário não encontrado.' });
+        return res.status(200).json(user);
+    } catch (error) {
+          console.error('getProfile error:', error && error.message ? error.message : error);
+          return res.status(500).json({ error: (error && error.message) || 'Erro ao buscar perfil.' });
+    }
+}
+
+// Exporta getProfile
+module.exports.getProfile = getProfile;
 
 
