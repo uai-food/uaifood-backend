@@ -1,7 +1,6 @@
 const prisma = require('../../prisma/prismaClient');
 const bcrypt = require('bcrypt');
 const jwtConfig = require('../../auth/jwtConfigs');
-const { get } = require('../routes/user');
 
 // Criar usuário
 async function createUser(req, res) {
