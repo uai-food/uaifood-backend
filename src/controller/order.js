@@ -6,7 +6,7 @@ const prisma = new PrismaClient();
 exports.getAll = (req, res) => {
   prisma.order.findMany({
     include: {
-      client: true,
+      client: { include: { address: true } },
       createdBy: true,
       items: { include: { item: true } }
     }
@@ -56,7 +56,7 @@ exports.getById = (req, res) => {
   prisma.order.findUnique({
     where: { id: BigInt(id) },
     include: {
-      client: true,
+      client: { include: { address: true } },
       createdBy: true,
       items: { include: { item: true } }
     }
@@ -105,7 +105,7 @@ exports.getMyOrders = (req, res) => {
   prisma.order.findMany({
     where: { clientId: BigInt(userId) },
     include: {
-      client: true,
+      client: { include: { address: true } },
       createdBy: true,
       items: { include: { item: true } }
     }
