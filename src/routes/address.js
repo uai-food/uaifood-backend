@@ -99,8 +99,8 @@ const addressController = require('../controller/address');
  *         description: Endereço removido
  */
 
-const { addressSchema, updateAddressSchema } = require('../validation/address.schema');
-const validate = require('../validation/validate');
+const { addressSchema, updateAddressSchema } = require('../zodValidation/address.schema');
+const validate = require('../zodValidation/validate');
 const { autenticarToken } = require('../controller/user');
 
 router.get('/', addressController.getAll);

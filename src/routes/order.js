@@ -99,8 +99,8 @@ const orderController = require('../controller/order');
  *         description: Pedido removido
  */
 
-const { orderSchema, updateOrderSchema } = require('../validation/order.schema');
-const validate = require('../validation/validate');
+const { orderSchema, updateOrderSchema } = require('../zodValidation/order.schema');
+const validate = require('../zodValidation/validate');
 const { autenticarToken } = require('../controller/user');
 
 router.get('/', orderController.getAll);

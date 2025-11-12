@@ -99,8 +99,8 @@ const categoryController = require('../controller/category');
  *         description: Categoria removida
  */
 
-const { categorySchema, updateCategorySchema } = require('../validation/category.schema');
-const validate = require('../validation/validate');
+const { categorySchema, updateCategorySchema } = require('../zodValidation/category.schema');
+const validate = require('../zodValidation/validate');
 const { autenticarToken } = require('../controller/user');
 const { requireRole } = require('../middleware/authorization');
 

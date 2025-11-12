@@ -99,8 +99,8 @@ const itemController = require('../controller/item');
  *         description: Item removido
  */
 
-const { itemSchema, updateItemSchema } = require('../validation/item.schema');
-const validate = require('../validation/validate');
+const { itemSchema, updateItemSchema } = require('../zodValidation/item.schema');
+const validate = require('../zodValidation/validate');
 const { autenticarToken } = require('../controller/user');
 const { requireRole } = require('../middleware/authorization');
 

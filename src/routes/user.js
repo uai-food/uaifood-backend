@@ -16,7 +16,7 @@ const {
 } = require('../controller/user');
 const { requireSelfOrRole, requireRole } = require('../middleware/authorization');
 
-const { createUserSchema, loginUserSchema, updateUserSchema, updateProfileSchema, changePasswordSchema, promoteUserSchema, validate } = require('../validation/user.schema');
+const { createUserSchema, loginUserSchema, updateUserSchema, updateProfileSchema, changePasswordSchema, promoteUserSchema, validate } = require('../zodValidation/user.schema');
 
 /**
  * @swagger
