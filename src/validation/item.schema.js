@@ -22,6 +22,8 @@ const itemSchema = z
         .int({ message: 'O ID da categoria deve ser um número inteiro.' })
         .positive({ message: 'O ID da categoria deve ser positivo.' })
     ),
+    imageUrl: z.string().url({ message: 'imageUrl deve ser uma URL válida.' }).optional(),
+    rating: z.preprocess((v) => (typeof v === 'string' ? Number(v) : v), z.number().optional()),
   })
   .strict({
     message: 'O corpo da requisição contém campos não permitidos.',
@@ -54,6 +56,8 @@ const updateItemSchema = z
           .positive({ message: 'O ID da categoria deve ser positivo.' })
       )
       .optional(),
+    imageUrl: z.string().url({ message: 'imageUrl deve ser uma URL válida.' }).optional(),
+    rating: z.preprocess((v) => (typeof v === 'string' ? Number(v) : v), z.number().optional()).optional(),
   })
   .strict({
     message: 'O corpo da requisição contém campos não permitidos.',
@@ -65,15 +69,16 @@ function validate(schema) {
     const result = schema.safeParse(req.body);
 
     if (!result.success) {
-      const errors = result.error.errors.map((e) => ({
-        campo: e.path.join('.') || 'corpo',
-        mensagem: e.message,
+      const rawErrors = (result.error && Array.isArray(result.error.errors))
+        ? result.error.errors
+        : [{ path: [], message: result.error ? result.error.message || 'Erro de validação' : 'Erro de validação' }];
+
+      const errors = rawErrors.map((e) => ({
+        campo: (e.path && e.path.length ? e.path.join('.') : 'corpo'),
+        mensagem: e.message || 'Campo inválido',
       }));
 
-      return res.status(400).json({
-        sucesso: false,
-        erros: errors,
-      });
+      return res.status(400).json({ sucesso: false, erros: errors });
     }
 
     req.body = result.data;

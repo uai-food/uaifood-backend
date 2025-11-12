@@ -46,15 +46,16 @@ function validate(schema) {
     const result = schema.safeParse(req.body);
 
     if (!result.success) {
-      const errors = result.error.errors.map((e) => ({
-        campo: e.path.join('.') || 'corpo',
-        mensagem: e.message,
+      const rawErrors = (result.error && Array.isArray(result.error.errors))
+        ? result.error.errors
+        : [{ path: [], message: result.error ? result.error.message || 'Erro de validação' : 'Erro de validação' }];
+
+      const errors = rawErrors.map((e) => ({
+        campo: (e.path && e.path.length ? e.path.join('.') : 'corpo'),
+        mensagem: e.message || 'Campo inválido',
       }));
 
-      return res.status(400).json({
-        sucesso: false,
-        erros: errors,
-      });
+      return res.status(400).json({ sucesso: false, erros: errors });
     }
 
     req.body = result.data;
