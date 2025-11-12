@@ -7,10 +7,17 @@ const paymentMethodEnum = z.enum(['CASH', 'DEBIT', 'CREDIT', 'PIX'], {
   }),
 });
 
-// Enum para status do pedido
-const statusEnum = z.enum(['PENDING', 'IN_PROGRESS', 'COMPLETED', 'CANCELLED'], {
+// Enum para status do pedido — manter os mesmos valores do schema Prisma
+const statusEnum = z.enum([
+  'PENDING',
+  'PAID',
+  'PREPARING',
+  'OUT_FOR_DELIVERY',
+  'DELIVERED',
+  'CANCELLED',
+], {
   errorMap: () => ({
-    message: 'Status inválido. Use: PENDING, IN_PROGRESS, COMPLETED ou CANCELLED.',
+    message: 'Status inválido. Use: PENDING, PAID, PREPARING, OUT_FOR_DELIVERY, DELIVERED ou CANCELLED.',
   }),
 });
 
