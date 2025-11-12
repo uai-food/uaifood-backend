@@ -96,6 +96,37 @@ const updateUserSchema = z
     message: 'O corpo da requisição contém campos não permitidos.',
   });
 
+// Atualizar perfil (usado em /user/profile)
+const updateProfileSchema = z
+  .object({
+    name: z.string().min(1).max(50).optional(),
+    email: z.string().email().optional(),
+    phone: z.string().min(8).max(20).optional(),
+    birthDate: z.string().regex(/^\d{4}-\d{2}-\d{2}$/).optional(),
+    address: z
+      .object({
+        street: z.string().optional(),
+        number: z.string().optional(),
+        district: z.string().optional(),
+        city: z.string().optional(),
+        state: z.string().optional(),
+        zipCode: z.string().optional(),
+      })
+      .optional(),
+  })
+  .strict({ message: 'O corpo da requisição contém campos não permitidos.' });
+
+// Troca de senha
+const changePasswordSchema = z
+  .object({
+    oldPassword: z.string().min(6, { message: 'Senha atual inválida.' }),
+    newPassword: z.string().min(6, { message: 'A nova senha deve ter pelo menos 6 caracteres.' }),
+  })
+  .strict({ message: 'O corpo da requisição contém campos não permitidos.' });
+
+// Promover usuário - apenas precisa do parâmetro id na rota, mas validação body optional
+const promoteUserSchema = z.object({}).strict({ message: 'O corpo da requisição contém campos não permitidos.' });
+
 // Middleware de validação
 function validate(schema) {
   return (req, res, next) => {

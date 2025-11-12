@@ -8,12 +8,15 @@ const {
   updateUser, 
   deleteUser,
   loginUser,
-  autenticarToken
+  autenticarToken,
+  getProfile,
+  updateProfile,
+  changePassword,
+  promoteUser
 } = require('../controller/user');
-const { getProfile } = require('../controller/user');
-const { requireSelfOrRole } = require('../middleware/authorization');
+const { requireSelfOrRole, requireRole } = require('../middleware/authorization');
 
-const { createUserSchema, loginUserSchema, updateUserSchema, validate } = require('../validation/user.schema');
+const { createUserSchema, loginUserSchema, updateUserSchema, updateProfileSchema, changePasswordSchema, promoteUserSchema, validate } = require('../validation/user.schema');
 
 /**
  * @swagger
@@ -201,5 +204,106 @@ router.post('/login', validate(loginUserSchema), loginUser);
 
 // Retorna o perfil do usuário autenticado
 router.get('/profile', autenticarToken, getProfile);
+
+/**
+ * @swagger
+ * /user/profile:
+ *   put:
+ *     summary: Atualizar perfil do usuário autenticado
+ *     tags: [Users]
+ *     security:
+ *       - bearerAuth: []
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               name:
+ *                 type: string
+ *               email:
+ *                 type: string
+ *               phone:
+ *                 type: string
+ *               birthDate:
+ *                 type: string
+ *                 format: date
+ *               address:
+ *                 type: object
+ *                 description: Campos do endereço (street, number, district, city, state, zipCode)
+ *     responses:
+ *       200:
+ *         description: Perfil atualizado com sucesso.
+ *       400:
+ *         description: Erro na atualização do perfil.
+ */
+router.put('/profile', autenticarToken, validate(updateProfileSchema), updateProfile);
+
+/**
+ * @swagger
+ * /user/profile/change-password:
+ *   put:
+ *     summary: Alterar senha do usuário autenticado
+ *     tags: [Users]
+ *     security:
+ *       - bearerAuth: []
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               oldPassword:
+ *                 type: string
+ *               newPassword:
+ *                 type: string
+ *     responses:
+ *       200:
+ *         description: Senha alterada com sucesso.
+ *       400:
+ *         description: Erro na alteração de senha.
+ */
+router.put('/profile/change-password', autenticarToken, validate(changePasswordSchema), changePassword);
+
+/**
+ * @swagger
+ * /user/{id}/promote:
+ *   post:
+ *     summary: Promover um usuário para ADMIN (somente ADMIN)
+ *     tags: [Users]
+ *     security:
+ *       - bearerAuth: []
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         required: true
+ *         schema:
+ *           type: integer
+ *         description: ID do usuário a ser promovido
+ *     responses:
+ *       200:
+ *         description: Usuário promovido com sucesso.
+ *       403:
+ *         description: Acesso negado.
+ */
+router.post('/:id/promote', autenticarToken, requireRole('ADMIN'), validate(promoteUserSchema), promoteUser);
+
+// DEBUG route: retorna informações sobre o token e usuário (apenas para desenvolvimento)
+router.get('/debug/token', autenticarToken, async (req, res) => {
+  try {
+    const payload = req.user || null;
+    // tenta buscar usuário no banco se houver id
+    let dbUser = null;
+    if (payload && payload.id) {
+      dbUser = await require('../prisma/prismaClient').user.findUnique({ where: { id: Number(payload.id) } });
+    }
+    return res.status(200).json({ payload, dbUser });
+  } catch (err) {
+    console.error('debug/token error', err && err.message ? err.message : err);
+    return res.status(500).json({ error: 'Erro no debug token' });
+  }
+});
 
 module.exports = router;

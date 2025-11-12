@@ -8,9 +8,10 @@ function requireRole(...allowedRoles) {
       const userPayload = req.user; // pega o payload do JWT que foi preenchido pelo middleware de autenticação
       if (!userPayload || !userPayload.id) return res.sendStatus(401); // se não houver usuário autenticado, retorna 401
 
-      const userId = userPayload.id;
-      // busca o usuário no banco de dados pelo ID
-      const dbUser = await prisma.user.findUnique({ where: { id: BigInt(userId) } });
+  const userId = userPayload.id;
+  // busca o usuário no banco de dados pelo ID
+  // usar Number para manter consistência com outros controllers que usam Number(...)
+  const dbUser = await prisma.user.findUnique({ where: { id: Number(userId) } });
       if (!dbUser) return res.sendStatus(401); // se usuário não existir no banco, retorna 401
 
       // verifica se o tipo do usuário está entre os permitidos
@@ -35,9 +36,9 @@ function requireSelfOrRole(...allowedRoles) {
       const userPayload = req.user; // pega o payload do JWT
       if (!userPayload || !userPayload.id) return res.sendStatus(401); // se não estiver autenticado, retorna 401
 
-      const userId = userPayload.id;
-      // busca o usuário no banco de dados pelo ID
-      const dbUser = await prisma.user.findUnique({ where: { id: BigInt(userId) } });
+  const userId = userPayload.id;
+  // busca o usuário no banco de dados pelo ID
+  const dbUser = await prisma.user.findUnique({ where: { id: Number(userId) } });
       if (!dbUser) return res.sendStatus(401); // se não encontrar, retorna 401
 
       // verifica se o usuário está tentando acessar seus próprios dados
