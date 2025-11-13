@@ -105,7 +105,6 @@ const { authenticateToken } = require('../middleware/authorization');
 
 router.get('/', orderController.getAll);
 // Pedidos do usuário autenticado
-// Pedidos do usuário autenticado
 router.get('/my-orders', authenticateToken, orderController.getMyOrders);
 router.post('/', authenticateToken, validate(orderSchema), orderController.create);
 router.get('/:id', authenticateToken, orderController.getById);
