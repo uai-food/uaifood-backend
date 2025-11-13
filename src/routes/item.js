@@ -101,13 +101,12 @@ const itemController = require('../controller/item');
 
 const { itemSchema, updateItemSchema } = require('../zodValidation/item.schema');
 const validate = require('../zodValidation/validate');
-const { autenticarToken } = require('../controller/user');
-const { requireRole } = require('../middleware/authorization');
+const { authenticateToken, requireRole } = require('../middleware/authorization');
 
 router.get('/', itemController.getAll);
 router.get('/:id', itemController.getById);
-router.post('/', autenticarToken, requireRole('ADMIN'), validate(itemSchema), itemController.create);
-router.put('/:id', autenticarToken, requireRole('ADMIN'), validate(updateItemSchema), itemController.update);
-router.delete('/:id', autenticarToken, requireRole('ADMIN'), itemController.delete);
+router.post('/', authenticateToken, requireRole('ADMIN'), validate(itemSchema), itemController.create);
+router.put('/:id', authenticateToken, requireRole('ADMIN'), validate(updateItemSchema), itemController.update);
+router.delete('/:id', authenticateToken, requireRole('ADMIN'), itemController.delete);
 
 module.exports = router;

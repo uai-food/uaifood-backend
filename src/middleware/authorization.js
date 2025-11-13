@@ -1,4 +1,5 @@
 const prisma = require('../../prisma/prismaClient');
+const jwtConfig = require('../../auth/jwtConfigs');
 
 // Middleware que permite acesso somente para usuários com certos papéis
 // Exemplo: requireRole('ADMIN') => só permite admins
@@ -62,4 +63,20 @@ function requireSelfOrRole(...allowedRoles) {
   };
 }
 
-module.exports = { requireRole, requireSelfOrRole }; // exporta os middlewares
+// Middleware para autenticar o token JWT e popular `req.user`
+async function authenticateToken(req, res, next) {
+  const authHeader = req.headers['authorization'];
+  const token = authHeader && authHeader.split(' ')[1];
+  if (token == null) return res.status(401).json({ error: 'Token ausente' });
+  try {
+    const payload = await jwtConfig.verifyToken(token);
+    const id = payload && payload.id ? Number(payload.id) : undefined;
+    req.user = { ...payload, id };
+    return next();
+  } catch (error) {
+    console.error('JWT verify error:', error && error.message ? error.message : error);
+    return res.status(403).json({ error: (error && error.message) || 'Token inválido' });
+  }
+}
+
+module.exports = { requireRole, requireSelfOrRole, authenticateToken };

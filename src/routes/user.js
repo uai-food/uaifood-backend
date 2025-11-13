@@ -8,13 +8,12 @@ const {
   updateUser, 
   deleteUser,
   loginUser,
-  autenticarToken,
   getProfile,
   updateProfile,
   changePassword,
 } = require('../controller/user');
 
-const { requireSelfOrRole, requireRole } = require('../middleware/authorization');
+const { requireSelfOrRole, requireRole, authenticateToken } = require('../middleware/authorization');
 const { createUserSchema, loginUserSchema, updateUserSchema, updateProfileSchema, changePasswordSchema, validate } = require('../zodValidation/user.schema');
 
 // Rotas públicas
@@ -125,7 +124,7 @@ router.post('/login', validate(loginUserSchema), loginUser);
  *       404:
  *         description: Usuário não encontrado.
  */
-router.get('/profile', autenticarToken, getProfile);
+router.get('/profile', authenticateToken, getProfile);
 
 /**
  * @swagger
@@ -160,7 +159,7 @@ router.get('/profile', autenticarToken, getProfile);
  *       400:
  *         description: Erro na atualização do perfil.
  */
-router.put('/profile', autenticarToken, validate(updateProfileSchema), updateProfile);
+router.put('/profile', authenticateToken, validate(updateProfileSchema), updateProfile);
 
 /**
  * @swagger
@@ -187,7 +186,7 @@ router.put('/profile', autenticarToken, validate(updateProfileSchema), updatePro
  *       400:
  *         description: Erro na alteração de senha.
  */
-router.put('/profile/change-password', autenticarToken, validate(changePasswordSchema), changePassword);
+router.put('/profile/change-password', authenticateToken, validate(changePasswordSchema), changePassword);
 
 // Rotas administrativas ou de usuário específico
 
@@ -205,7 +204,7 @@ router.put('/profile/change-password', autenticarToken, validate(changePasswordS
  *       403:
  *         description: Acesso não autorizado.
  */
-router.get('/', autenticarToken, requireRole('ADMIN'), listUsers);
+router.get('/', authenticateToken, requireRole('ADMIN'), listUsers);
 
 /**
  * @swagger
@@ -230,7 +229,7 @@ router.get('/', autenticarToken, requireRole('ADMIN'), listUsers);
  *       404:
  *         description: Usuário não encontrado.
  */
-router.get('/:id', autenticarToken, requireSelfOrRole('ADMIN'), getUserById);
+router.get('/:id', authenticateToken, requireSelfOrRole('ADMIN'), getUserById);
 
 /**
  * @swagger
@@ -261,7 +260,7 @@ router.get('/:id', autenticarToken, requireSelfOrRole('ADMIN'), getUserById);
  *       403:
  *         description: Acesso não autorizado.
  */
-router.put('/:id', autenticarToken, requireSelfOrRole('ADMIN'), validate(updateUserSchema), updateUser);
+router.put('/:id', authenticateToken, requireSelfOrRole('ADMIN'), validate(updateUserSchema), updateUser);
 
 /**
  * @swagger
@@ -286,10 +285,10 @@ router.put('/:id', autenticarToken, requireSelfOrRole('ADMIN'), validate(updateU
  *       404:
  *         description: Usuário não encontrado.
  */
-router.delete('/:id', autenticarToken, requireSelfOrRole('ADMIN'), deleteUser);
+router.delete('/:id', authenticateToken, requireSelfOrRole('ADMIN'), deleteUser);
 
 // Rotas de debug (opcional)
-router.get('/debug/token', autenticarToken, async (req, res) => {
+router.get('/debug/token', authenticateToken, async (req, res) => {
   try {
     const payload = req.user || null;
     let dbUser = null;

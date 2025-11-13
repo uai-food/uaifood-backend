@@ -101,14 +101,15 @@ const orderController = require('../controller/order');
 
 const { orderSchema, updateOrderSchema } = require('../zodValidation/order.schema');
 const validate = require('../zodValidation/validate');
-const { autenticarToken } = require('../controller/user');
+const { authenticateToken } = require('../middleware/authorization');
 
 router.get('/', orderController.getAll);
 // Pedidos do usuário autenticado
-router.get('/my-orders', autenticarToken, orderController.getMyOrders);
-router.post('/', autenticarToken, validate(orderSchema), orderController.create);
-router.get('/:id', autenticarToken, orderController.getById);
-router.put('/:id', autenticarToken, validate(updateOrderSchema), orderController.update);
-router.delete('/:id', autenticarToken, orderController.delete);
+// Pedidos do usuário autenticado
+router.get('/my-orders', authenticateToken, orderController.getMyOrders);
+router.post('/', authenticateToken, validate(orderSchema), orderController.create);
+router.get('/:id', authenticateToken, orderController.getById);
+router.put('/:id', authenticateToken, validate(updateOrderSchema), orderController.update);
+router.delete('/:id', authenticateToken, orderController.delete);
 
 module.exports = router;

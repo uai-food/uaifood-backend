@@ -101,12 +101,12 @@ const addressController = require('../controller/address');
 
 const { addressSchema, updateAddressSchema } = require('../zodValidation/address.schema');
 const validate = require('../zodValidation/validate');
-const { autenticarToken } = require('../controller/user');
+const { authenticateToken } = require('../middleware/authorization');
 
 router.get('/', addressController.getAll);
-router.post('/', autenticarToken, validate(addressSchema), addressController.create);
+router.post('/', authenticateToken, validate(addressSchema), addressController.create);
 router.get('/:id', addressController.getById);
-router.put('/:id', autenticarToken, validate(updateAddressSchema), addressController.update);
-router.delete('/:id', autenticarToken, addressController.delete);
+router.put('/:id', authenticateToken, validate(updateAddressSchema), addressController.update);
+router.delete('/:id', authenticateToken, addressController.delete);
 
 module.exports = router;

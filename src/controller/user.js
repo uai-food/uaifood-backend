@@ -148,24 +148,6 @@ async function loginUser(req, res) {
     }
 }
 
-// Autenticação de token
-async function autenticarToken(req, res, next) {
-    const authHeader = req.headers['authorization'];
-    const token = authHeader && authHeader.split(' ')[1];
-    if (token == null) return res.status(401).json({ error: 'Token ausente' });
-    try {
-        const payload = await jwtConfig.verifyToken(token);
-        // normalizar id como number para usar com Prisma (que nas rotinas abaixo usa Number(id))
-        const id = payload && payload.id ? Number(payload.id) : undefined;
-        req.user = { ...payload, id };
-        next();
-    } catch (error) {
-        console.error('JWT verify error:', error && error.message ? error.message : error);
-        return res.status(403).json({ error: (error && error.message) || 'Token inválido' });
-    }
-}
-
-
 // Retorna perfil do usuário autenticado (usado pelo frontend)
 async function getProfile(req, res) {
     try {
@@ -265,7 +247,6 @@ module.exports = {
     updateUser,
     deleteUser,
     loginUser,
-    autenticarToken,
     getProfile,
     updateProfile,
     changePassword,

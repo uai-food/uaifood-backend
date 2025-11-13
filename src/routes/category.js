@@ -101,13 +101,12 @@ const categoryController = require('../controller/category');
 
 const { categorySchema, updateCategorySchema } = require('../zodValidation/category.schema');
 const validate = require('../zodValidation/validate');
-const { autenticarToken } = require('../controller/user');
-const { requireRole } = require('../middleware/authorization');
+const { authenticateToken, requireRole } = require('../middleware/authorization');
 
 router.get('/', categoryController.getAll);
 router.get('/:id', categoryController.getById);
-router.post('/', autenticarToken, requireRole('ADMIN'), validate(categorySchema), categoryController.create);
-router.put('/:id', autenticarToken, requireRole('ADMIN'), validate(updateCategorySchema), categoryController.update);
-router.delete('/:id', autenticarToken, requireRole('ADMIN'), categoryController.delete);
+router.post('/', authenticateToken, requireRole('ADMIN'), validate(categorySchema), categoryController.create);
+router.put('/:id', authenticateToken, requireRole('ADMIN'), validate(updateCategorySchema), categoryController.update);
+router.delete('/:id', authenticateToken, requireRole('ADMIN'), categoryController.delete);
 
 module.exports = router;
