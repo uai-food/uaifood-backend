@@ -64,7 +64,7 @@ async function getUserById(req, res) {
 // Atualizar usuário
 async function updateUser(req, res) {
     const { id } = req.params;
-    const { name, email, password, birthDate, phone, type } = req.body;
+    const { name, email, password, birthDate, phone, type, address } = req.body;
     try {
         // Se email for fornecido, verificar unicidade
         if (email) {
@@ -82,6 +82,17 @@ async function updateUser(req, res) {
         if (phone !== undefined) data.phone = phone;
         if (type !== undefined) data.type = type; // permite atualizar tipo
 
+        // tratar endereço: se enviado, criar/atualizar e associar
+        if (address && typeof address === 'object') {
+            const currentUser = await prisma.user.findUnique({ where: { id: Number(id) } });
+            if (currentUser && currentUser.addressId) {
+                const updatedAddress = await prisma.address.update({ where: { id: Number(currentUser.addressId) }, data: address });
+                data.addressId = updatedAddress.id;
+            } else {
+                const createdAddress = await prisma.address.create({ data: address });
+                data.addressId = createdAddress.id;
+            }
+        }
 
         const updatedUser = await prisma.user.update({
             where: { id: Number(id) },
@@ -243,41 +254,6 @@ async function changePassword(req, res) {
     }
 }
 
-//Promover usuário para ADMIN (somente ADMIN pode chamar)
-async function promoteUser(req, res) {
-    try {
-        const requesterId = req.user && req.user.id;
-        if (!requesterId) return res.status(401).json({ error: 'Usuário não autenticado.' });
-        
-        // verifica se solicitante é ADMIN
-        console.log('promoteUser called by requesterId=', requesterId, 'params=', req.params);
-        
-        const requester = await prisma.user.findUnique({ where: { id: Number(requesterId) } });
-        if (!requester) {
-            console.warn('promoteUser: requester not found', requesterId);
-            return res.status(403).json({ error: 'Acesso negado.' });
-        }
-        if (requester.type !== 'ADMIN') {
-            console.warn('promoteUser: requester not admin', requesterId, requester.type);
-            return res.status(403).json({ error: 'Acesso negado.' });
-        }
-        
-        const { id } = req.params;
-        console.log('promoteUser: target id=', id);
-        const target = await prisma.user.findUnique({ where: { id: Number(id) } });
-        if (!target) {
-            console.warn('promoteUser: target not found', id);
-            return res.status(404).json({ error: 'Usuário não encontrado.' });
-        }
-        
-        const updated = await prisma.user.update({ where: { id: Number(id) }, data: { type: 'ADMIN' } });
-        return res.status(200).json(updated);
-    } catch (error) {
-        console.error('promoteUser error:', error && error.message ? error.message : error);
-        return res.status(500).json({ error: (error && error.message) || 'Erro ao promover usuário.' });
-    }
-}
-
 module.exports = {
     createUser,
     listUsers,
@@ -289,5 +265,4 @@ module.exports = {
     getProfile,
     updateProfile,
     changePassword,
-    promoteUser,
 };

@@ -12,11 +12,10 @@ const {
   getProfile,
   updateProfile,
   changePassword,
-  promoteUser
 } = require('../controller/user');
 const { requireSelfOrRole, requireRole } = require('../middleware/authorization');
 
-const { createUserSchema, loginUserSchema, updateUserSchema, updateProfileSchema, changePasswordSchema, promoteUserSchema, validate } = require('../zodValidation/user.schema');
+const { createUserSchema, loginUserSchema, updateUserSchema, updateProfileSchema, changePasswordSchema, validate } = require('../zodValidation/user.schema');
 
 /**
  * @swagger
@@ -266,29 +265,6 @@ router.put('/profile', autenticarToken, validate(updateProfileSchema), updatePro
  *         description: Erro na alteração de senha.
  */
 router.put('/profile/change-password', autenticarToken, validate(changePasswordSchema), changePassword);
-
-/**
- * @swagger
- * /user/{id}/promote:
- *   post:
- *     summary: Promover um usuário para ADMIN (somente ADMIN)
- *     tags: [Users]
- *     security:
- *       - bearerAuth: []
- *     parameters:
- *       - in: path
- *         name: id
- *         required: true
- *         schema:
- *           type: integer
- *         description: ID do usuário a ser promovido
- *     responses:
- *       200:
- *         description: Usuário promovido com sucesso.
- *       403:
- *         description: Acesso negado.
- */
-router.post('/:id/promote', autenticarToken, requireRole('ADMIN'), validate(promoteUserSchema), promoteUser);
 
 // DEBUG route: retorna informações sobre o token e usuário (apenas para desenvolvimento)
 router.get('/debug/token', autenticarToken, async (req, res) => {

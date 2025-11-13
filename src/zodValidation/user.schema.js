@@ -102,6 +102,17 @@ const updateUserSchema = z
         message: 'A data de nascimento deve estar no formato YYYY-MM-DD.',
       })
       .optional(),
+    // permitir atualizar endereço via API administrativa
+    address: z
+      .object({
+        street: z.string().optional(),
+        number: z.string().optional(),
+        district: z.string().optional(),
+        city: z.string().optional(),
+        state: z.string().optional(),
+        zipCode: z.string().optional(),
+      })
+      .optional(),
   })
   .strict({
     message: 'O corpo da requisição contém campos não permitidos.',
@@ -134,9 +145,6 @@ const changePasswordSchema = z
     newPassword: z.string().min(6, { message: 'A nova senha deve ter pelo menos 6 caracteres.' }),
   })
   .strict({ message: 'O corpo da requisição contém campos não permitidos.' });
-
-// Promover usuário - apenas precisa do parâmetro id na rota, mas validação body optional
-const promoteUserSchema = z.object({}).strict({ message: 'O corpo da requisição contém campos não permitidos.' });
 
 // Middleware de validação
 function validate(schema) {
