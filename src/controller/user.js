@@ -11,17 +11,26 @@ async function createUser(req, res) {
         if (existing) {
             return res.status(400).json({ error: 'E-mail já cadastrado.' });
         }
-        const senhaCriptografada = await bcrypt.hash(password, 10);
-        const newUser = await prisma.user.create({
-            data: {
-                name,
-                email,
-                password: senhaCriptografada,
-                birthDate: new Date(birthDate),
-                phone,
-                type: "CLIENT"
-            },
-        });
+            const senhaCriptografada = await bcrypt.hash(password, 10);
+
+            // Se for enviado endereço, cria primeiro e associa ao usuário
+            let addressId = null;
+            if (req.body.address && typeof req.body.address === 'object') {
+                const createdAddress = await prisma.address.create({ data: req.body.address });
+                addressId = createdAddress.id;
+            }
+
+            const newUser = await prisma.user.create({
+                data: {
+                    name,
+                    email,
+                    password: senhaCriptografada,
+                    birthDate: new Date(birthDate),
+                    phone,
+                    type: "CLIENT",
+                    addressId: addressId || null,
+                },
+            });
         return res.status(201).json(newUser);
     } catch (error) {
         console.error(error);

@@ -15,10 +15,10 @@ async function main() {
   console.log('Limpando tabelas...');
   await prisma.orderItem.deleteMany();
   await prisma.order.deleteMany();
+  await prisma.user.deleteMany();
   await prisma.item.deleteMany();
   await prisma.category.deleteMany();
   await prisma.address.deleteMany();
-  await prisma.user.deleteMany();
 
   console.log('Inserindo dados exportados...');
 
@@ -32,7 +32,28 @@ async function main() {
     await prisma.item.createMany({ data: data.items });
   }
 
-  // Cria usuários 
+  // Cria endereços (parents for users)
+  if (data.addresses?.length) {
+    await prisma.address.createMany({ data: data.addresses });
+  }
+
+  // Ajustar sequences para evitar conflitos de IDs ao usar bigserial + inserts com IDs explícitos
+  const resetSequence = async (tableName) => {
+    try {
+      await prisma.$executeRawUnsafe(
+        `SELECT setval(
+         pg_get_serial_sequence('"${tableName}"','id'),
+         COALESCE((SELECT MAX(id) FROM "${tableName}"), 0) + 1,
+         false
+       )`
+      );
+    } catch (e) {
+      console.warn('Não foi possível ajustar sequence para', tableName, e.message || e);
+    }
+  };
+
+
+  // Cria usuários
   if (data.users?.length) {
     const usersWithHashedPasswords = await Promise.all(
       data.users.map(async (u) => ({
@@ -43,10 +64,13 @@ async function main() {
     await prisma.user.createMany({ data: usersWithHashedPasswords });
   }
 
-  // Cria endereços
-  if (data.addresses?.length) {
-    await prisma.address.createMany({ data: data.addresses });
-  }
+  // Reset sequences after inserting data with explicit ids
+  await resetSequence('Category');
+  await resetSequence('Item');
+  await resetSequence('Address');
+  await resetSequence('User');
+  await resetSequence('Order');
+  await resetSequence('OrderItem');
 
   // Cria pedidos
   if (data.orders?.length) {

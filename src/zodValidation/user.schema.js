@@ -33,6 +33,17 @@ const createUserSchema = z
       .regex(/^\d{4}-\d{2}-\d{2}$/, {
         message: 'A data de nascimento deve estar no formato YYYY-MM-DD.',
       }),
+    // Permitir enviar endereço já no cadastro
+    address: z
+      .object({
+        street: z.string().optional(),
+        number: z.string().optional(),
+        district: z.string().optional(),
+        city: z.string().optional(),
+        state: z.string().optional(),
+        zipCode: z.string().optional(),
+      })
+      .optional(),
   })
   .strict({
     message: 'O corpo da requisição contém campos não permitidos.',
