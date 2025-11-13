@@ -135,4 +135,5 @@ Observações: consulte os controllers em `uaifood-backend/src/controller/` para
   - `npm run build` — build de produção
     
 **Desenvolvedor(a) responsável**
-  Victoria Souza Santos
+
+Victoria Souza Santos
