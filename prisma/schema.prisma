@@ -13,78 +13,78 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
-
 model User {
-  id           BigInt    @id @default(autoincrement())
-  name         String
-  email        String    @unique
-  password     String
-  birthDate    DateTime
-  phone        String?
-  type         UserType
-  createdAt    DateTime  @default(now())
-  updatedAt    DateTime  @updatedAt
-  addressId    BigInt?
-  address      Address?  @relation(fields: [addressId], references: [id])
-  ordersAsClient   Order[]   @relation("Client")
-  ordersCreatedBy  Order[]   @relation("CreatedBy")
+  id              BigInt   @id @default(autoincrement())
+  name            String
+  email           String   @unique
+  password        String
+  birthDate       DateTime
+  phone           String?
+  type            UserType
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+  addressId       BigInt?
+  address         Address? @relation(fields: [addressId], references: [id])
+  ordersAsClient  Order[]  @relation("Client")
+  ordersCreatedBy Order[]  @relation("CreatedBy")
 }
 
 model Address {
-  id       BigInt   @id @default(autoincrement())
-  street   String
-  number   String
-  district String
-  city     String
-  state    String
-  zipCode  String
-  users    User[]
+  id        BigInt   @id @default(autoincrement())
+  street    String
+  number    String
+  district  String
+  city      String
+  state     String
+  zipCode   String
+  users     User[]
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 }
 
 model Order {
-  id            BigInt         @id @default(autoincrement())
+  id            BigInt        @id @default(autoincrement())
   clientId      BigInt
-  client        User           @relation("Client", fields: [clientId], references: [id])
+  client        User          @relation("Client", fields: [clientId], references: [id])
   paymentMethod PaymentMethod
-  status        OrderStatus 
+  status        OrderStatus
+  total         Float         @default(0)
   createdById   BigInt?
-  createdBy     User?          @relation("CreatedBy", fields: [createdById], references: [id])
-  createdAt     DateTime       @default(now())
-  updatedAt     DateTime       @updatedAt
+  createdBy     User?         @relation("CreatedBy", fields: [createdById], references: [id])
+  createdAt     DateTime      @default(now())
+  updatedAt     DateTime      @updatedAt
   items         OrderItem[]
 }
 
 model OrderItem {
-  id         BigInt    @id @default(autoincrement())
-  orderId    BigInt
-  order      Order     @relation(fields: [orderId], references: [id])
-  itemId     BigInt
-  item       Item      @relation(fields: [itemId], references: [id])
-  quantity   Int
-  createdAt  DateTime  @default(now())
-  updatedAt  DateTime  @updatedAt
+  id        BigInt   @id @default(autoincrement())
+  orderId   BigInt
+  order     Order    @relation(fields: [orderId], references: [id])
+  itemId    BigInt
+  item      Item     @relation(fields: [itemId], references: [id])
+  quantity  Int
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 }
 
 model Item {
-  id         BigInt    @id @default(autoincrement())
+  id          BigInt      @id @default(autoincrement())
   description String
   unitPrice   Float
   imageUrl    String?
   rating      Float?
   categoryId  BigInt
-  category    Category  @relation(fields: [categoryId], references: [id])
-  createdAt   DateTime  @default(now())
-  updatedAt   DateTime  @updatedAt
+  category    Category    @relation(fields: [categoryId], references: [id])
+  createdAt   DateTime    @default(now())
+  updatedAt   DateTime    @updatedAt
   orderItems  OrderItem[]
 }
 
 model Category {
-  id          BigInt    @id @default(autoincrement())
+  id          BigInt   @id @default(autoincrement())
   description String
-  createdAt   DateTime  @default(now())
-  updatedAt   DateTime  @updatedAt
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
   items       Item[]
 }
 
@@ -101,10 +101,10 @@ enum PaymentMethod {
 }
 
 enum OrderStatus {
-  PENDING         // Pedido criado, aguardando pagamento
-  PAID            // Pago, aguardando preparo
-  PREPARING       // Sendo preparado
+  PENDING // Pedido criado, aguardando pagamento
+  PAID // Pago, aguardando preparo
+  PREPARING // Sendo preparado
   OUT_FOR_DELIVERY // Saiu para entrega
-  DELIVERED       // Entregue
-  CANCELLED       // Cancelado
+  DELIVERED // Entregue
+  CANCELLED // Cancelado
 }

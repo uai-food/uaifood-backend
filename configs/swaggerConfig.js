@@ -43,6 +43,7 @@ const swaggerOptions = {
             clientId: { type: 'integer', example: 1 },
             paymentMethod: { type: 'string', example: 'CASH' },
             status: { type: 'string', example: 'PENDENTE' },
+            total: { type: 'number', example: 45.5 },
             createdById: { type: 'integer', example: 2 },
             createdAt: { type: 'string', format: 'date-time' },
             updatedAt: { type: 'string', format: 'date-time' },
