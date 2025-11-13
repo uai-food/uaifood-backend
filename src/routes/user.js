@@ -13,9 +13,11 @@ const {
   updateProfile,
   changePassword,
 } = require('../controller/user');
-const { requireSelfOrRole, requireRole } = require('../middleware/authorization');
 
+const { requireSelfOrRole, requireRole } = require('../middleware/authorization');
 const { createUserSchema, loginUserSchema, updateUserSchema, updateProfileSchema, changePasswordSchema, validate } = require('../zodValidation/user.schema');
+
+// Rotas públicas
 
 /**
  * @swagger
@@ -49,8 +51,8 @@ const { createUserSchema, loginUserSchema, updateUserSchema, updateProfileSchema
  *                 example: "1133333333"
  *               type:
  *                 type: string
- *                 description: Tipo do usuário (por exemplo, CLIENT ou ADMIN)
- *                 example: "ADMIN"
+ *                 description: Tipo do usuário (CLIENT ou ADMIN)
+ *                 example: "CLIENT"
  *               birthDate:
  *                 type: string
  *                 format: date
@@ -63,102 +65,6 @@ const { createUserSchema, loginUserSchema, updateUserSchema, updateProfileSchema
  *         description: Falha ao criar usuário.
  */
 router.post('/', validate(createUserSchema), createUser);
-
-/**
- * @swagger
- * /user:
- *   get:
- *     summary: Listar todos os usuários
- *     tags: [Users]
- *     description: Retorna a lista de todos os usuários cadastrados.
- *     responses:
- *       200:
- *         description: Lista de usuários recuperada com sucesso.
- */
-router.get('/', listUsers);
-
-/**
- * @swagger
- * /user/{id}:
- *   get:
- *     summary: Obter usuário por ID
- *     tags: [Users]
- *     description: Retorna detalhes de um usuário específico.
- *     parameters:
- *       - in: path
- *         name: id
- *         required: true
- *         schema:
- *           type: integer
- *         description: ID do usuário
- *     responses:
- *       200:
- *         description: Usuário encontrado.
- *       404:
- *         description: Usuário não encontrado.
- */
-router.get('/:id', autenticarToken, getUserById);
-
-/**
- * @swagger
- * /user/{id}:
- *   put:
- *     summary: Atualizar um usuário
- *     tags: [Users]
- *     description: Atualiza os dados de um usuário existente.
- *     parameters:
- *       - in: path
- *         name: id
- *         required: true
- *         schema:
- *           type: integer
- *         description: ID do usuário
- *     requestBody:
- *       required: true
- *       content:
- *         application/json:
- *           schema:
- *             type: object
- *             properties:
- *               name:
- *                 type: string
- *               email:
- *                 type: string
- *               password:
- *                 type: string
- *               phone:
- *                 type: string
- *               type:
- *                 type: string
- *     responses:
- *       200:
- *         description: Usuário atualizado com sucesso.
- *       400:
- *         description: Erro ao atualizar usuário.
- */
-router.put('/:id', autenticarToken, requireSelfOrRole('ADMIN'), validate(updateUserSchema), updateUser);
-
-/**
- * @swagger
- * /user/{id}:
- *   delete:
- *     summary: Remover um usuário
- *     tags: [Users]
- *     description: Remove um usuário do sistema pelo ID.
- *     parameters:
- *       - in: path
- *         name: id
- *         required: true
- *         schema:
- *           type: integer
- *         description: ID do usuário
- *     responses:
- *       200:
- *         description: Usuário removido com sucesso.
- *       404:
- *         description: Usuário não encontrado.
- */
-router.delete('/:id', autenticarToken, requireSelfOrRole('ADMIN'), deleteUser);
 
 /**
  * @swagger
@@ -201,7 +107,24 @@ router.delete('/:id', autenticarToken, requireSelfOrRole('ADMIN'), deleteUser);
  */
 router.post('/login', validate(loginUserSchema), loginUser);
 
-// Retorna o perfil do usuário autenticado
+// Rotas de perfil do usuário autenticado
+
+/**
+ * @swagger
+ * /user/profile:
+ *   get:
+ *     summary: Retornar perfil do usuário autenticado
+ *     tags: [Users]
+ *     security:
+ *       - bearerAuth: []
+ *     responses:
+ *       200:
+ *         description: Perfil do usuário retornado com sucesso.
+ *       401:
+ *         description: Usuário não autenticado.
+ *       404:
+ *         description: Usuário não encontrado.
+ */
 router.get('/profile', autenticarToken, getProfile);
 
 /**
@@ -266,11 +189,109 @@ router.put('/profile', autenticarToken, validate(updateProfileSchema), updatePro
  */
 router.put('/profile/change-password', autenticarToken, validate(changePasswordSchema), changePassword);
 
-// DEBUG route: retorna informações sobre o token e usuário (apenas para desenvolvimento)
+// Rotas administrativas ou de usuário específico
+
+/**
+ * @swagger
+ * /user:
+ *   get:
+ *     summary: Listar todos os usuários
+ *     tags: [Users]
+ *     security:
+ *       - bearerAuth: []
+ *     responses:
+ *       200:
+ *         description: Lista de usuários recuperada com sucesso.
+ *       403:
+ *         description: Acesso não autorizado.
+ */
+router.get('/', autenticarToken, requireRole('ADMIN'), listUsers);
+
+/**
+ * @swagger
+ * /user/{id}:
+ *   get:
+ *     summary: Obter usuário por ID
+ *     tags: [Users]
+ *     security:
+ *       - bearerAuth: []
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         required: true
+ *         schema:
+ *           type: integer
+ *         description: ID do usuário
+ *     responses:
+ *       200:
+ *         description: Usuário encontrado.
+ *       403:
+ *         description: Acesso não autorizado.
+ *       404:
+ *         description: Usuário não encontrado.
+ */
+router.get('/:id', autenticarToken, requireSelfOrRole('ADMIN'), getUserById);
+
+/**
+ * @swagger
+ * /user/{id}:
+ *   put:
+ *     summary: Atualizar usuário por ID (admin ou o próprio usuário)
+ *     tags: [Users]
+ *     security:
+ *       - bearerAuth: []
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         required: true
+ *         schema:
+ *           type: integer
+ *         description: ID do usuário
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             $ref: '#/components/schemas/UpdateUser'
+ *     responses:
+ *       200:
+ *         description: Usuário atualizado com sucesso.
+ *       400:
+ *         description: Erro na atualização do usuário.
+ *       403:
+ *         description: Acesso não autorizado.
+ */
+router.put('/:id', autenticarToken, requireSelfOrRole('ADMIN'), validate(updateUserSchema), updateUser);
+
+/**
+ * @swagger
+ * /user/{id}:
+ *   delete:
+ *     summary: Deletar usuário por ID (admin ou o próprio usuário)
+ *     tags: [Users]
+ *     security:
+ *       - bearerAuth: []
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         required: true
+ *         schema:
+ *           type: integer
+ *         description: ID do usuário
+ *     responses:
+ *       200:
+ *         description: Usuário deletado com sucesso.
+ *       403:
+ *         description: Acesso não autorizado.
+ *       404:
+ *         description: Usuário não encontrado.
+ */
+router.delete('/:id', autenticarToken, requireSelfOrRole('ADMIN'), deleteUser);
+
+// Rotas de debug (opcional)
 router.get('/debug/token', autenticarToken, async (req, res) => {
   try {
     const payload = req.user || null;
-    // tenta buscar usuário no banco se houver id
     let dbUser = null;
     if (payload && payload.id) {
       dbUser = await require('../prisma/prismaClient').user.findUnique({ where: { id: Number(payload.id) } });
