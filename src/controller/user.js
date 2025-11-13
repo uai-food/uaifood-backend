@@ -97,8 +97,11 @@ async function updateUser(req, res) {
         const updatedUser = await prisma.user.update({
             where: { id: Number(id) },
             data,
+            include: { address: true },
         });
-        return res.status(200).json(updatedUser);
+        // não retornar senha
+        const { password: _pwd, ...safe } = Object.assign({}, updatedUser);
+        return res.status(200).json(safe);
     } catch (error) {
         return res.status(400).json({ error: 'Erro ao atualizar usuário.' });
     }
@@ -222,8 +225,9 @@ async function updateProfile(req, res) {
         if (birthDate !== undefined) data.birthDate = new Date(birthDate);
         if (addressId) data.addressId = addressId;
         
-        const updatedUser = await prisma.user.update({ where: { id: Number(userId) }, data });
-        return res.status(200).json(updatedUser);
+        const updatedUser = await prisma.user.update({ where: { id: Number(userId) }, data, include: { address: true } });
+        const { password: _pwd, ...safe } = Object.assign({}, updatedUser);
+        return res.status(200).json(safe);
     } catch (error) {
         console.error('updateProfile error:', error && error.message ? error.message : error);
         return res.status(400).json({ error: 'Erro ao atualizar perfil.' });

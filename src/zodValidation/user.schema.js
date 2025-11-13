@@ -174,5 +174,7 @@ module.exports = {
   createUserSchema,
   loginUserSchema,
   updateUserSchema,
+  updateProfileSchema,
+  changePasswordSchema,
   validate,
 };
