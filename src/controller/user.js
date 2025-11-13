@@ -79,6 +79,7 @@ async function updateUser(req, res) {
         if (email !== undefined) data.email = email;
         if (password !== undefined) data.password = await bcrypt.hash(password, 10);
         if (birthDate !== undefined) data.birthDate = new Date(birthDate);
+        if (type !== undefined) data.type = type; //permite atualizar tipo
 
         const updatedUser = await prisma.user.update({
             where: { id: Number(id) },
