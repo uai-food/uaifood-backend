@@ -64,7 +64,7 @@ async function getUserById(req, res) {
 // Atualizar usuário
 async function updateUser(req, res) {
     const { id } = req.params;
-    const { name, email, password, birthDate } = req.body;
+    const { name, email, password, birthDate, phone, type } = req.body;
     try {
         // Se email for fornecido, verificar unicidade
         if (email) {
@@ -79,7 +79,9 @@ async function updateUser(req, res) {
         if (email !== undefined) data.email = email;
         if (password !== undefined) data.password = await bcrypt.hash(password, 10);
         if (birthDate !== undefined) data.birthDate = new Date(birthDate);
-        if (type !== undefined) data.type = type; //permite atualizar tipo
+        if (phone !== undefined) data.phone = phone;
+        if (type !== undefined) data.type = type; // permite atualizar tipo
+
 
         const updatedUser = await prisma.user.update({
             where: { id: Number(id) },
