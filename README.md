@@ -134,5 +134,5 @@ Observações: consulte os controllers em `uaifood-backend/src/controller/` para
   - `npm run dev` — rodar Vite
   - `npm run build` — build de produção
     
-  **Desenvolvedor(a) responsável**
-  Victoria Souza Santos
+**Desenvolvedor(a) responsável**
+Victoria Souza Santos
