@@ -63,6 +63,52 @@ const swaggerOptions = {
             updatedAt: { type: 'string', format: 'date-time' }
           }
         }
+        ,
+        User: {
+          type: 'object',
+          properties: {
+            id: { type: 'integer', example: 1 },
+            name: { type: 'string', example: 'Stefani Joanne' },
+            email: { type: 'string', example: 'stefani@teste.com' },
+            phone: { type: 'string', example: '1133333333' },
+            type: { type: 'string', example: 'CLIENT' },
+            birthDate: { type: 'string', format: 'date', example: '2000-01-15' },
+            createdAt: { type: 'string', format: 'date-time' },
+            updatedAt: { type: 'string', format: 'date-time' }
+          }
+        },
+        UpdateUser: {
+          type: 'object',
+          properties: {
+            name: { type: 'string' },
+            email: { type: 'string' },
+            phone: { type: 'string' },
+            type: { type: 'string' },
+            birthDate: { type: 'string', format: 'date' }
+          }
+        },
+        LoginResponse: {
+          type: 'object',
+          properties: {
+            token: { type: 'string', example: 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...' }
+          }
+        },
+        Address: {
+          type: 'object',
+          properties: {
+            id: { type: 'integer', example: 1 },
+            street: { type: 'string', example: 'Av. Paulista' },
+            number: { type: 'string', example: '1000' },
+            complement: { type: 'string', example: 'Apto 101' },
+            district: { type: 'string', example: 'Bela Vista' },
+            city: { type: 'string', example: 'São Paulo' },
+            state: { type: 'string', example: 'SP' },
+            zipCode: { type: 'string', example: '01310-000' },
+            userId: { type: 'integer', example: 1 },
+            createdAt: { type: 'string', format: 'date-time' },
+            updatedAt: { type: 'string', format: 'date-time' }
+          }
+        }
       }
     }
   },
