@@ -1,6 +1,5 @@
 const { PrismaClient } = require('@prisma/client');
 const prisma = new PrismaClient();
-const fs = require('fs');
 const bcrypt = require('bcrypt');
 
 // Caso o banco tenha campos BigInt
@@ -8,8 +7,840 @@ BigInt.prototype.toJSON = function () {
   return this.toString();
 };
 
-// Lê o arquivo exportado do banco 
-const data = JSON.parse(fs.readFileSync('./prisma/exported-seed.json', 'utf-8'));
+// Dados exportados do banco
+const data = {
+  "categories": [
+    {
+      "id": "1",
+      "description": "Pizzas",
+      "createdAt": "2025-11-11T14:48:40.573Z",
+      "updatedAt": "2025-11-11T14:48:40.573Z"
+    },
+    {
+      "id": "2",
+      "description": "Lanches",
+      "createdAt": "2025-11-11T14:48:40.578Z",
+      "updatedAt": "2025-11-11T14:48:40.578Z"
+    },
+    {
+      "id": "3",
+      "description": "Massas",
+      "createdAt": "2025-11-11T14:48:40.582Z",
+      "updatedAt": "2025-11-11T14:48:40.582Z"
+    },
+    {
+      "id": "4",
+      "description": "Saladas",
+      "createdAt": "2025-11-11T14:48:40.585Z",
+      "updatedAt": "2025-11-11T14:48:40.585Z"
+    },
+    {
+      "id": "5",
+      "description": "Bebidas",
+      "createdAt": "2025-11-11T14:48:40.587Z",
+      "updatedAt": "2025-11-11T14:48:40.587Z"
+    },
+    {
+      "id": "6",
+      "description": "Sobremesas",
+      "createdAt": "2025-11-11T14:48:40.589Z",
+      "updatedAt": "2025-11-11T14:48:40.589Z"
+    },
+    {
+      "id": "7",
+      "description": "Petiscos",
+      "createdAt": "2025-11-11T14:48:40.591Z",
+      "updatedAt": "2025-11-11T14:48:40.591Z"
+    },
+    {
+      "id": "8",
+      "description": "Cafés",
+      "createdAt": "2025-11-11T14:48:40.593Z",
+      "updatedAt": "2025-11-11T14:48:40.593Z"
+    },
+    {
+      "id": "9",
+      "description": "Sucos Naturais",
+      "createdAt": "2025-11-11T14:48:40.596Z",
+      "updatedAt": "2025-11-11T14:48:40.596Z"
+    },
+    {
+      "id": "10",
+      "description": "Comidas Brasileiras",
+      "createdAt": "2025-11-11T14:48:40.598Z",
+      "updatedAt": "2025-11-11T14:48:40.598Z"
+    }
+  ],
+  "items": [
+    {
+      "id": "3",
+      "description": "Pizza Quatro Queijos",
+      "unitPrice": 49.9,
+      "imageUrl": "https://redefoodservice.com.br/wp-content/uploads/2023/07/Pizza-Quatro-Queijos.jpg",
+      "rating": 4,
+      "categoryId": "1",
+      "createdAt": "2025-11-11T14:48:40.606Z",
+      "updatedAt": "2025-11-12T03:33:48.883Z"
+    },
+    {
+      "id": "1",
+      "description": "Pizza Margherita",
+      "unitPrice": 89.9,
+      "imageUrl": "https://safrescobaldistatic.blob.core.windows.net/media/2022/11/PIZZA-MARGHERITA.jpg",
+      "rating": 3.6,
+      "categoryId": "1",
+      "createdAt": "2025-11-11T14:48:40.600Z",
+      "updatedAt": "2025-11-12T03:28:17.472Z"
+    },
+    {
+      "id": "39",
+      "description": "Moqueca de Peixe",
+      "unitPrice": 32,
+      "imageUrl": "https://diariodonordeste.verdesmares.com.br/image/contentid/policy:1.3245930:1655731847/moqueca%20de%20peixe.jpg?f=16x9&$p$f=fabb2c5",
+      "rating": 3.6,
+      "categoryId": "10",
+      "createdAt": "2025-11-11T14:48:40.669Z",
+      "updatedAt": "2025-11-12T03:28:40.938Z"
+    },
+    {
+      "id": "38",
+      "description": "Escondidinho de Carne Seca",
+      "unitPrice": 27,
+      "imageUrl": "https://guiadacozinha.com.br/wp-content/uploads/2020/11/escondidinho-de-frigideira-1.jpg",
+      "rating": 4.6,
+      "categoryId": "10",
+      "createdAt": "2025-11-11T14:48:40.668Z",
+      "updatedAt": "2025-11-12T03:29:34.065Z"
+    },
+    {
+      "id": "37",
+      "description": "Feijoada",
+      "unitPrice": 25,
+      "imageUrl": "https://www.comidaereceitas.com.br/wp-content/uploads/2016/04/Feijoada-deliciosa.jpg",
+      "rating": 4.3,
+      "categoryId": "10",
+      "createdAt": "2025-11-11T14:48:40.666Z",
+      "updatedAt": "2025-11-12T03:30:01.803Z"
+    },
+    {
+      "id": "35",
+      "description": "Suco de Morango",
+      "unitPrice": 9.5,
+      "imageUrl": "https://cdn.vnda.com.br/substancia/2016/07/15/60286-suco-de-morango-e-uva-271.jpg?v=1468588662",
+      "rating": 3.5,
+      "categoryId": "9",
+      "createdAt": "2025-11-11T14:48:40.662Z",
+      "updatedAt": "2025-11-12T03:30:50.688Z"
+    },
+    {
+      "id": "2",
+      "description": "Pizza Pepperoni",
+      "unitPrice": 44.9,
+      "imageUrl": "https://cdn.casaeculinaria.com/wp-content/uploads/2024/06/21163651/pizza-de-pepperoni-1.webp",
+      "rating": 3.5,
+      "categoryId": "1",
+      "createdAt": "2025-11-11T14:48:40.603Z",
+      "updatedAt": "2025-11-12T03:33:32.097Z"
+    },
+    {
+      "id": "5",
+      "description": "Pizza Portuguesa",
+      "unitPrice": 45.5,
+      "imageUrl": "https://www.ogastronomo.com.br/upload/389528334-curiosidades-sobre-a-pizza-portuguesa.jpg",
+      "rating": 3.6,
+      "categoryId": "1",
+      "createdAt": "2025-11-11T14:48:40.611Z",
+      "updatedAt": "2025-11-12T03:34:08.770Z"
+    },
+    {
+      "id": "6",
+      "description": "Hambúrguer Clássico",
+      "unitPrice": 28.5,
+      "imageUrl": "https://img77.uenicdn.com/image/upload/v1582164126/business/99def3c9-86a1-4c19-9317-d5376c18c298/hamburguer-shutterstockjpg.jpg",
+      "rating": 3.9,
+      "categoryId": "2",
+      "createdAt": "2025-11-11T14:48:40.612Z",
+      "updatedAt": "2025-11-12T03:34:44.655Z"
+    },
+    {
+      "id": "4",
+      "description": "Pizza Calabresa",
+      "unitPrice": 42,
+      "imageUrl": "https://cdn.oceanserver.com.br/lojas/mordomia/uploads_produto/a7r9422-60c75132f28f1.jpg",
+      "rating": 3.5,
+      "categoryId": "1",
+      "createdAt": "2025-11-11T14:48:40.609Z",
+      "updatedAt": "2025-11-12T03:36:49.980Z"
+    },
+    {
+      "id": "8",
+      "description": "X-Tudo",
+      "unitPrice": 35,
+      "imageUrl": "https://conteudo.imguol.com.br/c/entretenimento/17/2023/05/24/x-tudo-brasileiro-tem-variedade-de-ingredientes-de-acordo-com-preferencias-regionais-aqui-versao-com-carne-bovina-tomato-salsicha-presunto-bacon-e-queijo-no-pao-1684938396547_v2_4x3.jpg",
+      "rating": 4.1,
+      "categoryId": "2",
+      "createdAt": "2025-11-11T14:48:40.616Z",
+      "updatedAt": "2025-11-12T03:37:07.560Z"
+    },
+    {
+      "id": "9",
+      "description": "Cachorro-Quente Especial",
+      "unitPrice": 18,
+      "imageUrl": "https://www.academiaassai.com.br/sites/default/files/shutterstock_1724452687.jpg",
+      "rating": 4.4,
+      "categoryId": "2",
+      "createdAt": "2025-11-11T14:48:40.618Z",
+      "updatedAt": "2025-11-12T03:37:48.150Z"
+    },
+    {
+      "id": "10",
+      "description": "Sanduíche Natural",
+      "unitPrice": 15,
+      "imageUrl": "https://boomi.b-cdn.net/wp-content/uploads/2024/11/10-receitas-saudaveis-de-sanduiche-natural.png",
+      "rating": 3.7,
+      "categoryId": "2",
+      "createdAt": "2025-11-11T14:48:40.619Z",
+      "updatedAt": "2025-11-12T03:38:35.845Z"
+    },
+    {
+      "id": "11",
+      "description": "Spaghetti alla Carbonara",
+      "unitPrice": 29.9,
+      "imageUrl": "https://assets.tmecosys.com/image/upload/t_web_rdp_recipe_584x480_1_5x/img/recipe/ras/Assets/0346a29a89ef229b1a0ff9697184f944/Derivates/cb5051204f4a4525c8b013c16418ae2904e737b7.jpg",
+      "rating": 4.4,
+      "categoryId": "3",
+      "createdAt": "2025-11-11T14:48:40.621Z",
+      "updatedAt": "2025-11-12T03:39:03.528Z"
+    },
+    {
+      "id": "7",
+      "description": "Cheeseburger Bacon",
+      "unitPrice": 32,
+      "imageUrl": "https://www.simplyrecipes.com/thmb/cgJTtVSTy-ftI1dBM4P2x2FJf14=/1500x0/filters:no_upscale():max_bytes(150000):strip_icc()/Simply-Recipes-Bacon-Cheeseburger-LEAD-2b-6606850da0164612b5fb406a0e33f8df.jpg",
+      "rating": 3.8,
+      "categoryId": "2",
+      "createdAt": "2025-11-11T14:48:40.614Z",
+      "updatedAt": "2025-11-12T03:40:13.796Z"
+    },
+    {
+      "id": "20",
+      "description": "Refrigerante Lata",
+      "unitPrice": 6,
+      "imageUrl": "https://horasagradamc.meucatalogofacil.com/_core/_uploads/14/2020/11/111328112016gk25fh0h.jpeg",
+      "rating": 3.7,
+      "categoryId": "5",
+      "createdAt": "2025-11-11T14:48:40.636Z",
+      "updatedAt": "2025-11-12T03:40:48.330Z"
+    },
+    {
+      "id": "22",
+      "description": "Cerveja Long Neck",
+      "unitPrice": 9,
+      "imageUrl": "https://restaurantecumbuca.com.br/wp-content/uploads/2024/12/longneck.webp",
+      "rating": 3.7,
+      "categoryId": "5",
+      "createdAt": "2025-11-11T14:48:40.639Z",
+      "updatedAt": "2025-11-12T03:43:33.918Z"
+    },
+    {
+      "id": "23",
+      "description": "Chá Gelado",
+      "unitPrice": 7.5,
+      "imageUrl": "https://scontent.faax1-1.fna.fbcdn.net/v/t1.6435-9/129543668_4235351476481048_3715548219167083962_n.jpg?_nc_cat=106&ccb=1-7&_nc_sid=0b6b33&_nc_ohc=mMUwiUX4JPcQ7kNvwHcn0RS&_nc_oc=Adlgw_OIgU8kcTf_QOTMndmp4wxi-KRCCkKypWNL8uidGdJmFQQb6CfHM5V1my6usmo&_nc_zt=23&_nc_ht=scontent.faax1-1.fna&_nc_gid=-pCiPD-RQ5H0apOvxzzr6g&oh=00_AfjNlZP6ue0UO9s2ISxfrf2CU7pMs3InWRt_Pp8USo1XwA&oe=693B6BB9",
+      "rating": 4.5,
+      "categoryId": "5",
+      "createdAt": "2025-11-11T14:48:40.641Z",
+      "updatedAt": "2025-11-12T03:41:30.577Z"
+    },
+    {
+      "id": "21",
+      "description": "Água Mineral",
+      "unitPrice": 4.5,
+      "imageUrl": "https://img.freepik.com/fotos-premium/copo-de-agua-com-gelo-no-restaurante-agua-limpida-fria-em-copo-com-pedacos-de-gelo_548821-15710.jpg",
+      "rating": 4.7,
+      "categoryId": "5",
+      "createdAt": "2025-11-11T14:48:40.638Z",
+      "updatedAt": "2025-11-12T03:43:03.276Z"
+    },
+    {
+      "id": "19",
+      "description": "Suco de Laranja Natural",
+      "unitPrice": 8.5,
+      "imageUrl": "https://img.freepik.com/fotos-premium/copo-de-suco-de-laranja-com-fatia-de-laranja-no-jardim-ao-lado-de-limao_610208-19.jpg",
+      "rating": 4.3,
+      "categoryId": "5",
+      "createdAt": "2025-11-11T14:48:40.634Z",
+      "updatedAt": "2025-11-12T03:44:35.882Z"
+    },
+    {
+      "id": "25",
+      "description": "Pudim de Leite",
+      "unitPrice": 10,
+      "imageUrl": "https://www.dellizzia.com.br/wp-content/uploads/2022/08/prato-sobremesas-mini-pudim-de-leite.jpg",
+      "rating": 4.9,
+      "categoryId": "6",
+      "createdAt": "2025-11-11T14:48:40.644Z",
+      "updatedAt": "2025-11-12T03:45:11.304Z"
+    },
+    {
+      "id": "27",
+      "description": "Torta de Limão",
+      "unitPrice": 14,
+      "imageUrl": "https://recipesblob.oetker.com.br/assets/d044a4ef3cfe45998593f500c00942ef/1272x764/torta-de-limo.jpg",
+      "rating": 4.9,
+      "categoryId": "6",
+      "createdAt": "2025-11-11T14:48:40.648Z",
+      "updatedAt": "2025-11-12T03:45:31.736Z"
+    },
+    {
+      "id": "41",
+      "description": "Brownie de Chocolate",
+      "unitPrice": 14,
+      "imageUrl": "https://recipesblob.oetker.com.br/assets/677216088b6540a0b110ca1d74479af6/1272x764/brownie-com-sorvete.webp",
+      "rating": null,
+      "categoryId": "6",
+      "createdAt": "2025-11-12T03:46:02.778Z",
+      "updatedAt": "2025-11-12T03:46:02.778Z"
+    },
+    {
+      "id": "28",
+      "description": "Batata Frita",
+      "unitPrice": 12,
+      "imageUrl": "https://www.estadao.com.br/resizer/v2/MACYJYGZZZEHZM6DVGEQ7ADXIM.jpg?quality=80&auth=5177f6883a837e3393b32e286d84b3da2bb71d8ebc00d33862a83678e5030721&width=720&height=410&focal=2137,3786",
+      "rating": 4.7,
+      "categoryId": "7",
+      "createdAt": "2025-11-11T14:48:40.650Z",
+      "updatedAt": "2025-11-12T03:47:12.916Z"
+    },
+    {
+      "id": "29",
+      "description": "Onion Rings",
+      "unitPrice": 15,
+      "imageUrl": "https://smokinandgrillinwitab.com/wp-content/uploads/2025/02/iStock-2188707691-scaled.jpg",
+      "rating": 4.6,
+      "categoryId": "7",
+      "createdAt": "2025-11-11T14:48:40.652Z",
+      "updatedAt": "2025-11-12T03:47:38.756Z"
+    },
+    {
+      "id": "30",
+      "description": "Frango à Passarinho",
+      "unitPrice": 20,
+      "imageUrl": "https://cdn.outback.com.br/wp-data/wp-content/uploads/2018/10/Super-wings-2.jpg",
+      "rating": 3.9,
+      "categoryId": "7",
+      "createdAt": "2025-11-11T14:48:40.653Z",
+      "updatedAt": "2025-11-12T03:48:14.730Z"
+    },
+    {
+      "id": "31",
+      "description": "Café Expresso",
+      "unitPrice": 5,
+      "imageUrl": "https://oriundi.net/upload/publicacao/620x375/25092-a-origem-do-cafe-expresso.jpg?k=1624883158",
+      "rating": 4.8,
+      "categoryId": "8",
+      "createdAt": "2025-11-11T14:48:40.655Z",
+      "updatedAt": "2025-11-12T03:49:02.039Z"
+    },
+    {
+      "id": "32",
+      "description": "Café com Leite",
+      "unitPrice": 6,
+      "imageUrl": "https://assets.unileversolutions.com/recipes-v2/236948.jpg",
+      "rating": 4.9,
+      "categoryId": "8",
+      "createdAt": "2025-11-11T14:48:40.657Z",
+      "updatedAt": "2025-11-12T03:49:26.963Z"
+    },
+    {
+      "id": "33",
+      "description": "Cappuccino",
+      "unitPrice": 8,
+      "imageUrl": "https://www.receitasnestle.com.br/sites/default/files/srh_recipes/5dd4e59cc8f3618ae73bb37164c951fe.jpg",
+      "rating": 4.5,
+      "categoryId": "8",
+      "createdAt": "2025-11-11T14:48:40.659Z",
+      "updatedAt": "2025-11-12T03:49:53.841Z"
+    },
+    {
+      "id": "34",
+      "description": "Suco de Abacaxi",
+      "unitPrice": 9,
+      "imageUrl": "https://ricotaemaricota.com/wp-content/uploads/2021/12/receita-de-suco-abacaxi-foto.png",
+      "rating": 3.5,
+      "categoryId": "9",
+      "createdAt": "2025-11-11T14:48:40.661Z",
+      "updatedAt": "2025-11-12T03:50:31.350Z"
+    },
+    {
+      "id": "18",
+      "description": "Salada Verde",
+      "unitPrice": 18,
+      "imageUrl": "https://assets.unileversolutions.com/recipes-v2/215806.jpg",
+      "rating": 4.7,
+      "categoryId": "4",
+      "createdAt": "2025-11-11T14:48:40.633Z",
+      "updatedAt": "2025-11-12T03:51:25.150Z"
+    },
+    {
+      "id": "17",
+      "description": "Salada Caprese",
+      "unitPrice": 22.5,
+      "imageUrl": "https://www.confeiteiradesucesso.com/wp-content/uploads/2023/01/saladacaprese.jpg",
+      "rating": 4.9,
+      "categoryId": "4",
+      "createdAt": "2025-11-11T14:48:40.631Z",
+      "updatedAt": "2025-11-12T03:51:45.437Z"
+    },
+    {
+      "id": "16",
+      "description": "Salada Caesar com Frango",
+      "unitPrice": 24,
+      "imageUrl": "https://static1.minhavida.com.br/recipes/71/b7/f4/91/salada-caesar-com-frango-orig-1.jpg",
+      "rating": 4.4,
+      "categoryId": "4",
+      "createdAt": "2025-11-11T14:48:40.629Z",
+      "updatedAt": "2025-11-12T03:52:05.892Z"
+    },
+    {
+      "id": "15",
+      "description": "Nhoque ao Sugo",
+      "unitPrice": 26.5,
+      "imageUrl": "https://canaldareceita.com.br/wp-content/uploads/2025/06/Nhoque-ao-Forno-com-Molho-Sugo-e-Parmesao.jpg",
+      "rating": 4.9,
+      "categoryId": "3",
+      "createdAt": "2025-11-11T14:48:40.628Z",
+      "updatedAt": "2025-11-12T03:52:45.161Z"
+    },
+    {
+      "id": "14",
+      "description": "Ravioli de Ricota",
+      "unitPrice": 27,
+      "imageUrl": "https://cozinha365.com.br/wp-content/uploads/2025/02/Ravioli-de-Ricota-e-Espinafre-S.webp",
+      "rating": 3.7,
+      "categoryId": "3",
+      "createdAt": "2025-11-11T14:48:40.626Z",
+      "updatedAt": "2025-11-12T03:53:02.381Z"
+    },
+    {
+      "id": "12",
+      "description": "Fettuccine Alfredo",
+      "unitPrice": 31.5,
+      "imageUrl": "https://anamariabrogui.com.br/assets/uploads/receitas/fotos/a880981899a0bb47e2c92cb5b46c9d62bc6ef7b5.png",
+      "rating": 3.8,
+      "categoryId": "3",
+      "createdAt": "2025-11-11T14:48:40.623Z",
+      "updatedAt": "2025-11-12T03:54:11.065Z"
+    },
+    {
+      "id": "13",
+      "description": "Lasanha à Bolonhesa",
+      "unitPrice": 33,
+      "imageUrl": "https://guiadacozinha.com.br/wp-content/uploads/2014/01/lasanha-bolonhesa-na-pressao.jpg",
+      "rating": 3.9,
+      "categoryId": "3",
+      "createdAt": "2025-11-11T14:48:40.624Z",
+      "updatedAt": "2025-11-12T03:53:21.178Z"
+    }
+  ],
+  "addresses": [
+    {
+      "id": "1",
+      "street": "Rua Teste 1",
+      "number": "101",
+      "district": "Centro",
+      "city": "Uberaba",
+      "state": "MG",
+      "zipCode": "38000-000",
+      "createdAt": "2025-11-11T14:48:41.015Z",
+      "updatedAt": "2025-11-11T14:48:41.015Z"
+    },
+    {
+      "id": "2",
+      "street": "Rua Teste 2",
+      "number": "102",
+      "district": "Centro",
+      "city": "Uberaba",
+      "state": "MG",
+      "zipCode": "38000-000",
+      "createdAt": "2025-11-11T14:48:41.021Z",
+      "updatedAt": "2025-11-11T14:48:41.021Z"
+    },
+    {
+      "id": "3",
+      "street": "Rua Teste 3",
+      "number": "103",
+      "district": "Centro",
+      "city": "Uberaba",
+      "state": "MG",
+      "zipCode": "38000-000",
+      "createdAt": "2025-11-11T14:48:41.025Z",
+      "updatedAt": "2025-11-11T14:48:41.025Z"
+    },
+    {
+      "id": "4",
+      "street": "Rua Teste 4",
+      "number": "104",
+      "district": "Centro",
+      "city": "Uberaba",
+      "state": "MG",
+      "zipCode": "38000-000",
+      "createdAt": "2025-11-11T14:48:41.029Z",
+      "updatedAt": "2025-11-11T14:48:41.029Z"
+    },
+    {
+      "id": "5",
+      "street": "Rua Teste 5",
+      "number": "105",
+      "district": "Centro",
+      "city": "Uberaba",
+      "state": "MG",
+      "zipCode": "38000-000",
+      "createdAt": "2025-11-11T14:48:41.032Z",
+      "updatedAt": "2025-11-11T14:48:41.032Z"
+    }
+  ],
+  "users": [
+    {
+      "id": "1",
+      "name": "Admin User",
+      "email": "admin@uaifood.test",
+      "password": "$2b$10$B34AiCAVwSzhfTc6PLiLEOq5opmEgU3qcClB1MCs/GlIFCbOFQcfi",
+      "birthDate": "1990-01-01T00:00:00.000Z",
+      "phone": "11999999999",
+      "type": "ADMIN",
+      "createdAt": "2025-11-11T14:48:40.727Z",
+      "updatedAt": "2025-11-11T14:48:40.727Z",
+      "addressId": null
+    },
+    {
+      "id": "2",
+      "name": "Carlos Cliente",
+      "email": "carlos@cliente.test",
+      "password": "$2b$10$U3.OO7htEKonDTDiqTPaDesTWt32BTcWyeefd3h8b9yR4YSbTyiFW",
+      "birthDate": "1990-01-01T00:00:00.000Z",
+      "phone": "11999999999",
+      "type": "CLIENT",
+      "createdAt": "2025-11-11T14:48:40.783Z",
+      "updatedAt": "2025-11-11T14:48:41.015Z",
+      "addressId": "1"
+    },
+    {
+      "id": "3",
+      "name": "Maria Cliente",
+      "email": "maria@cliente.test",
+      "password": "$2b$10$9TVfHX1EgYbC83CegzrMguDnwNtl.XSPdFR4Jivxcaz24jnbeYbKO",
+      "birthDate": "1990-01-01T00:00:00.000Z",
+      "phone": "11999999999",
+      "type": "CLIENT",
+      "createdAt": "2025-11-11T14:48:40.842Z",
+      "updatedAt": "2025-11-11T14:48:41.021Z",
+      "addressId": "2"
+    },
+    {
+      "id": "4",
+      "name": "José Cliente",
+      "email": "jose@cliente.test",
+      "password": "$2b$10$xBJvaYnq2Qvazb72nKgvY.R81GytoY38GpKOgqc0mOMVq9bOOP.De",
+      "birthDate": "1990-01-01T00:00:00.000Z",
+      "phone": "11999999999",
+      "type": "CLIENT",
+      "createdAt": "2025-11-11T14:48:40.900Z",
+      "updatedAt": "2025-11-11T14:48:41.025Z",
+      "addressId": "3"
+    },
+    {
+      "id": "5",
+      "name": "Ana Cliente",
+      "email": "ana@cliente.test",
+      "password": "$2b$10$Xf9XsYQq.jBBqt.loK1DO.fKp9ZJKg8S0J9fZF2McrUBgf5GYW5vi",
+      "birthDate": "1990-01-01T00:00:00.000Z",
+      "phone": "11999999999",
+      "type": "CLIENT",
+      "createdAt": "2025-11-11T14:48:40.956Z",
+      "updatedAt": "2025-11-11T14:48:41.029Z",
+      "addressId": "4"
+    },
+    {
+      "id": "6",
+      "name": "Pedro Cliente",
+      "email": "pedro@cliente.test",
+      "password": "$2b$10$1lNS0ZCCN6lwvLbkknnwL.kai/XbBQY1FTm4q5.vT6WLUTJI2ZosS",
+      "birthDate": "1990-01-01T00:00:00.000Z",
+      "phone": "11999999999",
+      "type": "CLIENT",
+      "createdAt": "2025-11-11T14:48:41.011Z",
+      "updatedAt": "2025-11-11T14:48:41.032Z",
+      "addressId": "5"
+    },
+    {
+      "id": "7",
+      "name": "teste6",
+      "email": "teste6@mail.com",
+      "password": "$2b$10$qGBbPKp1oI34oMiSS85eyuWqTfyYRkIDXHbM3cRNoc80rEq6S3dYO",
+      "birthDate": "9511-11-11T00:00:00.000Z",
+      "phone": "349848448484",
+      "type": "CLIENT",
+      "createdAt": "2025-11-11T18:19:50.183Z",
+      "updatedAt": "2025-11-11T18:19:50.183Z",
+      "addressId": null
+    }
+  ],
+  "orders": [
+    {
+      "id": "1",
+      "clientId": "2",
+      "paymentMethod": "PIX",
+      "status": "PENDING",
+      "createdById": "1",
+      "createdAt": "2025-11-11T14:48:41.036Z",
+      "updatedAt": "2025-11-11T14:48:41.036Z"
+    },
+    {
+      "id": "2",
+      "clientId": "3",
+      "paymentMethod": "PIX",
+      "status": "PENDING",
+      "createdById": "1",
+      "createdAt": "2025-11-11T14:48:41.043Z",
+      "updatedAt": "2025-11-11T14:48:41.043Z"
+    },
+    {
+      "id": "3",
+      "clientId": "4",
+      "paymentMethod": "PIX",
+      "status": "PENDING",
+      "createdById": "1",
+      "createdAt": "2025-11-11T14:48:41.046Z",
+      "updatedAt": "2025-11-11T14:48:41.046Z"
+    },
+    {
+      "id": "4",
+      "clientId": "5",
+      "paymentMethod": "PIX",
+      "status": "PENDING",
+      "createdById": "1",
+      "createdAt": "2025-11-11T14:48:41.050Z",
+      "updatedAt": "2025-11-11T14:48:41.050Z"
+    },
+    {
+      "id": "5",
+      "clientId": "6",
+      "paymentMethod": "PIX",
+      "status": "PENDING",
+      "createdById": "1",
+      "createdAt": "2025-11-11T14:48:41.054Z",
+      "updatedAt": "2025-11-11T14:48:41.054Z"
+    },
+    {
+      "id": "6",
+      "clientId": "1",
+      "paymentMethod": "DEBIT",
+      "status": "PENDING",
+      "createdById": "2",
+      "createdAt": "2025-11-11T15:12:03.728Z",
+      "updatedAt": "2025-11-11T15:12:03.728Z"
+    },
+    {
+      "id": "7",
+      "clientId": "1",
+      "paymentMethod": "DEBIT",
+      "status": "PENDING",
+      "createdById": "2",
+      "createdAt": "2025-11-11T18:21:25.849Z",
+      "updatedAt": "2025-11-11T18:21:25.849Z"
+    },
+    {
+      "id": "8",
+      "clientId": "1",
+      "paymentMethod": "PIX",
+      "status": "DELIVERED",
+      "createdById": "2",
+      "createdAt": "2025-11-11T18:35:47.341Z",
+      "updatedAt": "2025-11-11T18:36:01.406Z"
+    },
+    {
+      "id": "9",
+      "clientId": "1",
+      "paymentMethod": "PIX",
+      "status": "OUT_FOR_DELIVERY",
+      "createdById": "3",
+      "createdAt": "2025-11-11T18:47:49.658Z",
+      "updatedAt": "2025-11-11T18:48:39.720Z"
+    },
+    {
+      "id": "10",
+      "clientId": "1",
+      "paymentMethod": "DEBIT",
+      "status": "DELIVERED",
+      "createdById": "5",
+      "createdAt": "2025-11-11T19:05:43.932Z",
+      "updatedAt": "2025-11-11T19:06:54.005Z"
+    }
+  ],
+  "orderItems": [
+    {
+      "id": "1",
+      "orderId": "1",
+      "itemId": "4",
+      "quantity": 1,
+      "createdAt": "2025-11-11T14:48:41.036Z",
+      "updatedAt": "2025-11-11T14:48:41.036Z"
+    },
+    {
+      "id": "2",
+      "orderId": "1",
+      "itemId": "5",
+      "quantity": 2,
+      "createdAt": "2025-11-11T14:48:41.036Z",
+      "updatedAt": "2025-11-11T14:48:41.036Z"
+    },
+    {
+      "id": "3",
+      "orderId": "1",
+      "itemId": "6",
+      "quantity": 3,
+      "createdAt": "2025-11-11T14:48:41.036Z",
+      "updatedAt": "2025-11-11T14:48:41.036Z"
+    },
+    {
+      "id": "4",
+      "orderId": "2",
+      "itemId": "7",
+      "quantity": 1,
+      "createdAt": "2025-11-11T14:48:41.043Z",
+      "updatedAt": "2025-11-11T14:48:41.043Z"
+    },
+    {
+      "id": "5",
+      "orderId": "2",
+      "itemId": "8",
+      "quantity": 2,
+      "createdAt": "2025-11-11T14:48:41.043Z",
+      "updatedAt": "2025-11-11T14:48:41.043Z"
+    },
+    {
+      "id": "6",
+      "orderId": "2",
+      "itemId": "9",
+      "quantity": 3,
+      "createdAt": "2025-11-11T14:48:41.043Z",
+      "updatedAt": "2025-11-11T14:48:41.043Z"
+    },
+    {
+      "id": "7",
+      "orderId": "3",
+      "itemId": "10",
+      "quantity": 1,
+      "createdAt": "2025-11-11T14:48:41.046Z",
+      "updatedAt": "2025-11-11T14:48:41.046Z"
+    },
+    {
+      "id": "8",
+      "orderId": "3",
+      "itemId": "11",
+      "quantity": 2,
+      "createdAt": "2025-11-11T14:48:41.046Z",
+      "updatedAt": "2025-11-11T14:48:41.046Z"
+    },
+    {
+      "id": "9",
+      "orderId": "3",
+      "itemId": "12",
+      "quantity": 3,
+      "createdAt": "2025-11-11T14:48:41.046Z",
+      "updatedAt": "2025-11-11T14:48:41.046Z"
+    },
+    {
+      "id": "10",
+      "orderId": "4",
+      "itemId": "13",
+      "quantity": 1,
+      "createdAt": "2025-11-11T14:48:41.050Z",
+      "updatedAt": "2025-11-11T14:48:41.050Z"
+    },
+    {
+      "id": "11",
+      "orderId": "4",
+      "itemId": "14",
+      "quantity": 2,
+      "createdAt": "2025-11-11T14:48:41.050Z",
+      "updatedAt": "2025-11-11T14:48:41.050Z"
+    },
+    {
+      "id": "12",
+      "orderId": "4",
+      "itemId": "15",
+      "quantity": 3,
+      "createdAt": "2025-11-11T14:48:41.050Z",
+      "updatedAt": "2025-11-11T14:48:41.050Z"
+    },
+    {
+      "id": "13",
+      "orderId": "5",
+      "itemId": "16",
+      "quantity": 1,
+      "createdAt": "2025-11-11T14:48:41.054Z",
+      "updatedAt": "2025-11-11T14:48:41.054Z"
+    },
+    {
+      "id": "14",
+      "orderId": "5",
+      "itemId": "17",
+      "quantity": 2,
+      "createdAt": "2025-11-11T14:48:41.054Z",
+      "updatedAt": "2025-11-11T14:48:41.054Z"
+    },
+    {
+      "id": "15",
+      "orderId": "5",
+      "itemId": "18",
+      "quantity": 3,
+      "createdAt": "2025-11-11T14:48:41.054Z",
+      "updatedAt": "2025-11-11T14:48:41.054Z"
+    },
+    {
+      "id": "16",
+      "orderId": "6",
+      "itemId": "1",
+      "quantity": 1,
+      "createdAt": "2025-11-11T15:12:03.728Z",
+      "updatedAt": "2025-11-11T15:12:03.728Z"
+    },
+    {
+      "id": "17",
+      "orderId": "7",
+      "itemId": "1",
+      "quantity": 2,
+      "createdAt": "2025-11-11T18:21:25.849Z",
+      "updatedAt": "2025-11-11T18:21:25.849Z"
+    },
+    {
+      "id": "18",
+      "orderId": "8",
+      "itemId": "2",
+      "quantity": 1,
+      "createdAt": "2025-11-11T18:35:47.341Z",
+      "updatedAt": "2025-11-11T18:35:47.341Z"
+    },
+    {
+      "id": "19",
+      "orderId": "9",
+      "itemId": "6",
+      "quantity": 1,
+      "createdAt": "2025-11-11T18:47:49.658Z",
+      "updatedAt": "2025-11-11T18:47:49.658Z"
+    },
+    {
+      "id": "20",
+      "orderId": "10",
+      "itemId": "3",
+      "quantity": 1,
+      "createdAt": "2025-11-11T19:05:43.932Z",
+      "updatedAt": "2025-11-11T19:05:43.932Z"
+    }
+  ]
+};
 
 async function main() {
   console.log('Limpando tabelas...');
@@ -74,7 +905,22 @@ async function main() {
 
   // Cria pedidos
   if (data.orders?.length) {
-    await prisma.order.createMany({ data: data.orders });
+    // Calcula total dos pedidos a partir de orderItems e items
+    const itemPriceMap = new Map();
+    (data.items || []).forEach((it) => itemPriceMap.set(it.id, Number(it.unitPrice || 0)));
+
+    const orderTotals = {};
+    (data.orderItems || []).forEach((oi) => {
+      const price = itemPriceMap.get(oi.itemId) || 0;
+      orderTotals[oi.orderId] = (orderTotals[oi.orderId] || 0) + price * (oi.quantity || 0);
+    });
+
+    const ordersWithTotal = data.orders.map((o) => ({
+      ...o,
+      total: Number(((orderTotals[o.id] || 0) ).toFixed(2)),
+    }));
+
+    await prisma.order.createMany({ data: ordersWithTotal });
   }
 
   // Cria itens de pedido
