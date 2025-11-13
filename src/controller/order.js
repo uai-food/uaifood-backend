@@ -16,25 +16,37 @@ exports.getAll = (req, res) => {
 };
 
 // Criar pedido
-exports.create = (req, res) => {
+exports.create = async (req, res) => {
   const { clientId, paymentMethod, status, createdById, items } = req.body;
 
-  prisma.order.create({
-    data: {
-      clientId: BigInt(clientId),
-      paymentMethod,
-      status,
-      createdById: createdById ? BigInt(createdById) : null,
-      items: {
-        create: items.map(i => ({
-          itemId: BigInt(i.itemId),
-          quantity: i.quantity
-        }))
-      }
-    },
-    include: { items: true }
-  })
-  .then(order => {
+  try {
+    // Buscar os preços dos itens para calcular o total
+    const itemIds = items.map(i => BigInt(i.itemId));
+    const dbItems = await prisma.item.findMany({ where: { id: { in: itemIds } } });
+    const priceMap = new Map(dbItems.map(it => [String(it.id), it.unitPrice]));
+
+    const total = items.reduce((sum, i) => {
+      const price = priceMap.get(String(BigInt(i.itemId))) || 0;
+      return sum + (Number(price) * Number(i.quantity));
+    }, 0);
+
+    const order = await prisma.order.create({
+      data: {
+        clientId: BigInt(clientId),
+        paymentMethod,
+        status,
+        total,
+        createdById: createdById ? BigInt(createdById) : null,
+        items: {
+          create: items.map(i => ({
+            itemId: BigInt(i.itemId),
+            quantity: i.quantity
+          }))
+        }
+      },
+      include: { items: { include: { item: true } } }
+    });
+
     // Inicia a simulação automática do ciclo de vida do pedido
     try {
       startSimulationForOrder(order.id).catch(err =>
@@ -45,8 +57,9 @@ exports.create = (req, res) => {
     }
 
     res.status(201).json(order);
-  })
-  .catch(error => res.status(500).json({ error: error.message }));
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
 };
 
 // Buscar pedido por ID
