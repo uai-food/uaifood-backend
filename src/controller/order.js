@@ -105,9 +105,7 @@ exports.delete = (req, res) => {
   .catch(error => res.status(500).json({ error: error.message }));
 };
 
-//
 // Retornar pedidos do usuário autenticado (cliente)
-//
 exports.getMyOrders = (req, res) => {
   const userId = req.user && req.user.id;
 
@@ -129,7 +127,6 @@ exports.getMyOrders = (req, res) => {
 
 
 // Função auxiliar que simula o ciclo de vida do pedido (com Promises encadeadas)
-
 const SIMULATION_DELAYS = {
   toPaid: 5000,           // tempo até mudar para "Pago"
   toPreparing: 15000,     // tempo até mudar para "Preparando"
@@ -137,11 +134,12 @@ const SIMULATION_DELAYS = {
   toDelivered: 20000,     // tempo até mudar para "Entregue"
 };
 
+// Função que inicia a simulação automática
 function startSimulationForOrder(orderId, delays = SIMULATION_DELAYS) {
   const idBig = (typeof orderId === 'bigint') ? orderId : BigInt(String(orderId));
   console.log('Iniciando simulação para o pedido', String(idBig));
 
-  // Retorna uma Promise que atualiza o status após um tempo
+  // Atualiza o status após um tempo definido (delay)
   const updateStatusAfter = (newStatus, delayMs) => {
     return new Promise((resolve, reject) => {
       setTimeout(() => {
@@ -161,7 +159,7 @@ function startSimulationForOrder(orderId, delays = SIMULATION_DELAYS) {
     });
   };
 
-  // Encadeamento das Promises
+  // Encadeia mudanças de status simulando o fluxo real de um pedido
   updateStatusAfter('PAID', delays.toPaid)
     .then(() => updateStatusAfter('PREPARING', delays.toPreparing))
     .then(() => updateStatusAfter('OUT_FOR_DELIVERY', delays.toOutForDelivery))
