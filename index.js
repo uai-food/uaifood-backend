@@ -19,7 +19,12 @@ BigInt.prototype.toJSON = function() {
 app.use(express.json());
 
 // Habilita CORS para permitir requisições do frontend (Vite/dev)
-app.use(cors());
+const corsOptions = {
+  origin: process.env.FRONTEND_URL || 'http://localhost:8080',
+  credentials: true,
+};
+app.use(cors(corsOptions));
+console.log(`CORS permitida para: ${corsOptions.origin}`);
 
 // Conecta a rota /usuarios
 app.use('/user', user);
