@@ -30,7 +30,8 @@ function requireRole(...allowedRoles) {
   };
 }
 
-// Middleware que permite acesso se o usuário for o próprio dono do recurso ou tiver um papel permitido
+// Middleware que permite acesso se o usuário for a pessoa autenticada ou tiver certos papéis
+// Exemplo: requireSelfOrRole('ADMIN') => permite se for o próprio usuário ou um admin
 function requireSelfOrRole(...allowedRoles) {
   return async (req, res, next) => {
     try {
